@@ -53,7 +53,6 @@ import org.terracotta.entity.PassiveSynchronizationChannel;
 import org.terracotta.entity.ServiceConfiguration;
 import org.terracotta.entity.ServiceRegistry;
 import org.terracotta.offheapresource.OffHeapResource;
-import org.terracotta.offheapresource.OffHeapResourceIdentifier;
 import org.terracotta.offheapstore.buffersource.OffHeapBufferSource;
 import org.terracotta.offheapstore.paging.OffHeapStorageArea;
 import org.terracotta.offheapstore.paging.Page;
@@ -74,6 +73,7 @@ import static org.ehcache.clustered.common.messages.LifecycleMessage.DestroyServ
 import static org.ehcache.clustered.common.messages.LifecycleMessage.ReleaseServerStore;
 import static org.ehcache.clustered.common.messages.LifecycleMessage.ValidateServerStore;
 import static org.ehcache.clustered.common.messages.LifecycleMessage.ValidateStoreManager;
+import org.terracotta.entity.BasicServiceConfiguration;
 
 // TODO: Provide some mechanism to report on storage utilization -- PageSource provides little visibility
 // TODO: Ensure proper operations for concurrent requests
@@ -82,7 +82,8 @@ class EhcacheActiveEntity implements ActiveServerEntity<EhcacheEntityMessage, Eh
   private static final Logger LOGGER = LoggerFactory.getLogger(EhcacheActiveEntity.class);
 
   private final UUID identity;
-  private final ServiceRegistry services;
+//  private final ServiceRegistry services;
+  private final OffheapResourceMap offheapResources;
 
   /**
    * The name of the resource to use for fixed resource pools not identifying a resource from which
@@ -154,7 +155,10 @@ class EhcacheActiveEntity implements ActiveServerEntity<EhcacheEntityMessage, Eh
 
   EhcacheActiveEntity(ServiceRegistry services, byte[] config) {
     this.identity = ClusteredEhcacheIdentity.deserialize(config);
-    this.services = services;
+    this.offheapResources = services.getService(new BasicServiceConfiguration<OffheapResourceMap>(OffheapResourceMap.class));
+    if (this.offheapResources == null) {
+      throw new RuntimeException("no offheap provided");
+    }
     this.responseFactory = new EhcacheEntityResponseFactory();
     this.clientCommunicator = services.getService(new CommunicatorServiceConfiguration());
   }
@@ -552,7 +556,7 @@ class EhcacheActiveEntity implements ActiveServerEntity<EhcacheEntityMessage, Eh
 
       this.defaultServerResource = configuration.getDefaultServerResource();
       if (this.defaultServerResource != null) {
-        OffHeapResource source = services.getService(OffHeapResourceIdentifier.identifier(this.defaultServerResource));
+        OffHeapResource source = this.offheapResources.get(this.defaultServerResource);
         if (source == null) {
           return responseFactory.failure(new IllegalArgumentException("Default server resource '" + this.defaultServerResource
               + "' is not defined"));
@@ -917,7 +921,7 @@ class EhcacheActiveEntity implements ActiveServerEntity<EhcacheEntityMessage, Eh
 
   private ResourcePageSource createPageSource(String poolName, Pool pool) {
     ResourcePageSource pageSource;
-    OffHeapResource source = services.getService(OffHeapResourceIdentifier.identifier(pool.getServerResource()));
+    OffHeapResource source = this.offheapResources.get(pool.getServerResource());
     if (source == null) {
       throw new IllegalArgumentException("Non-existent server side resource '" + pool.getServerResource() + "'");
     } else if (source.reserve(pool.getSize())) {
@@ -948,7 +952,7 @@ class EhcacheActiveEntity implements ActiveServerEntity<EhcacheEntityMessage, Eh
 
   private void releasePool(String poolType, String poolName, ResourcePageSource resourcePageSource) {
     Pool pool = resourcePageSource.getPool();
-    OffHeapResource source = services.getService(OffHeapResourceIdentifier.identifier(pool.getServerResource()));
+    OffHeapResource source = this.offheapResources.get(pool.getServerResource());
     if (source != null) {
       source.release(pool.getSize());
       LOGGER.info("Released {} bytes from resource '{}' for {} pool '{}'", pool.getSize(), pool.getServerResource(), poolType, poolName);
