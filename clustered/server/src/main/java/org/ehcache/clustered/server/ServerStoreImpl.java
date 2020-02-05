@@ -24,15 +24,13 @@ import org.ehcache.clustered.server.state.ResourcePageSource;
 import org.terracotta.offheapstore.exceptions.OversizeMappingException;
 import org.terracotta.offheapstore.paging.PageSource;
 
-import com.tc.classloader.CommonComponent;
-
 import java.nio.ByteBuffer;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 
-@CommonComponent
 public class ServerStoreImpl implements ServerSideServerStore {
 
   private final ServerStoreConfiguration storeConfiguration;
@@ -71,8 +69,9 @@ public class ServerStoreImpl implements ServerSideServerStore {
     return pageSource;
   }
 
-  public ServerStoreConfiguration getStoreConfiguration() {
-    return storeConfiguration;
+  @Override
+  public byte[] getStoreConfiguration() {
+    return ConfigSerializer.objectToBytes(storeConfiguration);
   }
 
   @Override

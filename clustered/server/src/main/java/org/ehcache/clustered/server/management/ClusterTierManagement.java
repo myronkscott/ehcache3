@@ -16,7 +16,6 @@
 
 package org.ehcache.clustered.server.management;
 
-import org.ehcache.clustered.common.ServerSideConfiguration;
 import org.ehcache.clustered.server.ServerSideServerStore;
 import org.ehcache.clustered.server.state.EhcacheStateService;
 import org.slf4j.Logger;
@@ -29,6 +28,7 @@ import org.terracotta.management.service.monitoring.EntityManagementRegistryConf
 
 import java.io.Closeable;
 import java.util.concurrent.CompletableFuture;
+import org.ehcache.clustered.common.ServerResourcePool;
 
 import static org.ehcache.clustered.server.management.Notification.EHCACHE_SERVER_STORE_CREATED;
 
@@ -92,7 +92,7 @@ public class ClusterTierManagement implements Closeable {
     ServerSideServerStore serverStore = ehcacheStateService.getStore(storeIdentifier);
     ServerStoreBinding serverStoreBinding = new ServerStoreBinding(storeIdentifier, serverStore);
     CompletableFuture<Void> r1 = managementRegistry.register(serverStoreBinding);
-    ServerSideConfiguration.Pool pool = ehcacheStateService.getDedicatedResourcePool(storeIdentifier);
+    ServerResourcePool pool = ehcacheStateService.getDedicatedResourcePool(storeIdentifier);
     CompletableFuture<Void> allOf;
     if (pool != null) {
       allOf = CompletableFuture.allOf(r1, managementRegistry.register(new PoolBinding(storeIdentifier, pool, PoolBinding.AllocationType.DEDICATED)));

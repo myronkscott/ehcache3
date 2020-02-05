@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
@@ -77,7 +78,7 @@ public class ClusterTierManagerActiveEntityTest {
   public void testDisconnectedNotConnected() throws Exception {
     OffHeapIdentifierRegistry registry = new OffHeapIdentifierRegistry();
     registry.addResource("defaultServerResource", 8, MemoryUnit.MEGABYTES);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(blankConfiguration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(blankConfiguration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(blankConfiguration, ehcacheStateService, management);
 
     ClientDescriptor client = new TestClientDescriptor();
@@ -101,7 +102,7 @@ public class ClusterTierManagerActiveEntityTest {
       .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
     ClientDescriptor client = new TestClientDescriptor();
     activeEntity.connected(client);
@@ -130,7 +131,7 @@ public class ClusterTierManagerActiveEntityTest {
       .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)    // missing on 'server'
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     try {
       new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
       fail("Entity creation should have failed");
@@ -162,7 +163,7 @@ public class ClusterTierManagerActiveEntityTest {
       .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("idenitifier", serverSideConfiguration);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     try {
       new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
       fail("Entity creation should have failed");
@@ -192,7 +193,7 @@ public class ClusterTierManagerActiveEntityTest {
       .sharedPool("tooBig", "serverResource2", 16, MemoryUnit.MEGABYTES)
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     try {
       new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
       fail("Entity creation should have failed");
@@ -223,7 +224,7 @@ public class ClusterTierManagerActiveEntityTest {
     registry.addResource("serverResource1", 8, MemoryUnit.MEGABYTES);
     registry.addResource("serverResource2", 8, MemoryUnit.MEGABYTES);
 
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());
@@ -249,7 +250,7 @@ public class ClusterTierManagerActiveEntityTest {
     registry.addResource("serverResource1", 8, MemoryUnit.MEGABYTES);
     registry.addResource("serverResource2", 8, MemoryUnit.MEGABYTES);
 
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());
@@ -269,7 +270,7 @@ public class ClusterTierManagerActiveEntityTest {
       .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());
@@ -295,7 +296,7 @@ public class ClusterTierManagerActiveEntityTest {
       .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());
@@ -313,7 +314,7 @@ public class ClusterTierManagerActiveEntityTest {
   public void testDestroyEmpty() throws Exception {
     OffHeapIdentifierRegistry registry = new OffHeapIdentifierRegistry();
     registry.addResource("defaultServerResource", 8, MemoryUnit.MEGABYTES);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(blankConfiguration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(blankConfiguration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(blankConfiguration, ehcacheStateService, management);
     activeEntity.destroy();
   }
@@ -337,7 +338,7 @@ public class ClusterTierManagerActiveEntityTest {
     registry.addResource("primary-server-resource", 16, MemoryUnit.MEGABYTES);
     registry.addResource("secondary-server-resource", 16, MemoryUnit.MEGABYTES);
 
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
 
     TestInvokeContext context = new TestInvokeContext();
@@ -359,7 +360,7 @@ public class ClusterTierManagerActiveEntityTest {
         .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
         .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", configure);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
 
     TestInvokeContext context = new TestInvokeContext();
@@ -385,7 +386,7 @@ public class ClusterTierManagerActiveEntityTest {
         .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
         .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", configure);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
 
     TestInvokeContext context = new TestInvokeContext();
@@ -411,7 +412,7 @@ public class ClusterTierManagerActiveEntityTest {
         .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
         .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", configure);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
 
     TestInvokeContext context = new TestInvokeContext();
@@ -437,7 +438,7 @@ public class ClusterTierManagerActiveEntityTest {
         .sharedPool("secondary", "serverResource2", 8, MemoryUnit.MEGABYTES)
         .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", initialConfiguration);
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(configuration), registry, DEFAULT_MAPPER));
     ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(configuration, ehcacheStateService, management);
 
     TestInvokeContext context = new TestInvokeContext();
@@ -450,7 +451,7 @@ public class ClusterTierManagerActiveEntityTest {
     final OffHeapIdentifierRegistry registry = new OffHeapIdentifierRegistry();
     registry.addResource("serverResource1", 8, MemoryUnit.MEGABYTES);
 
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(blankConfiguration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(blankConfiguration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(blankConfiguration, ehcacheStateService, management);
 
     TestInvokeContext context = new TestInvokeContext();
@@ -469,7 +470,7 @@ public class ClusterTierManagerActiveEntityTest {
     final OffHeapIdentifierRegistry registry = new OffHeapIdentifierRegistry();
     registry.addResource("serverResource1", 8, MemoryUnit.MEGABYTES);
 
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(blankConfiguration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(blankConfiguration), registry, DEFAULT_MAPPER));
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(blankConfiguration, ehcacheStateService, management);
 
     TestInvokeContext context = new TestInvokeContext();
@@ -490,7 +491,7 @@ public class ClusterTierManagerActiveEntityTest {
     final OffHeapIdentifierRegistry registry = new OffHeapIdentifierRegistry();
     registry.addResource("serverResource1", 8, MemoryUnit.MEGABYTES);
 
-    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(blankConfiguration, registry, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(blankConfiguration), registry, DEFAULT_MAPPER));
     ehcacheStateService.prepareForDestroy();
 
     final ClusterTierManagerActiveEntity activeEntity = new ClusterTierManagerActiveEntity(blankConfiguration, ehcacheStateService, management);
@@ -611,7 +612,7 @@ public class ClusterTierManagerActiveEntityTest {
             public boolean addOffHeapResource(OffHeapResourceIdentifier identifier, long capacity) {
               return false;
             }
-          }, config.getConfig().getConfiguration(), DEFAULT_MAPPER, service -> {});
+          }, ((ClusterTierManagerConfiguration)ConfigSerializer.bytesToObject(config.getConfig())).getConfiguration(), DEFAULT_MAPPER, service -> {});
         }
         return (T) (this.storeManagerService);
       } else if(serviceConfiguration instanceof EntityManagementRegistryConfiguration) {

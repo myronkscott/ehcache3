@@ -127,6 +127,7 @@ import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.isStoreOperationMessage;
 import static org.ehcache.clustered.server.ConcurrencyStrategies.DEFAULT_KEY;
 import static org.ehcache.clustered.server.ConcurrencyStrategies.clusterTierConcurrency;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 
 /**
  * ClusterTierActiveEntity
@@ -228,7 +229,7 @@ public class ClusterTierActiveEntity implements ActiveServerEntity<EhcacheEntity
 
   @Override
   public void createNew() throws ConfigurationException {
-    ServerSideServerStore store = stateService.createStore(storeIdentifier, configuration, true);
+    ServerSideServerStore store = stateService.createStore(storeIdentifier, ConfigSerializer.objectToBytes(configuration), true);
     store.setEventListener(new Listener());
     management.entityCreated();
   }
@@ -244,7 +245,7 @@ public class ClusterTierActiveEntity implements ActiveServerEntity<EhcacheEntity
       LOGGER.debug("Preparing for handling inflight invalidations");
       addInflightInvalidationsForEventualCaches();
     }
-    stateService.loadStore(storeIdentifier, configuration).setEventListener(new Listener());
+    stateService.loadStore(storeIdentifier, ConfigSerializer.objectToBytes(configuration)).setEventListener(new Listener());
     reconnectComplete.set(false);
     management.entityPromotionCompleted();
   }
@@ -323,7 +324,7 @@ public class ClusterTierActiveEntity implements ActiveServerEntity<EhcacheEntity
     try {
       if (message instanceof EhcacheOperationMessage) {
         EhcacheOperationMessage operationMessage = (EhcacheOperationMessage) message;
-        try (EhcacheStateContext ignored = stateService.beginProcessing(operationMessage, storeIdentifier)) {
+        try (EhcacheStateContext ignored = stateService.beginProcessing(()->EhcacheMessageType.isTrackedOperationMessage(operationMessage.getMessageType()), storeIdentifier)) {
           EhcacheMessageType messageType = operationMessage.getMessageType();
           if (isStoreOperationMessage(messageType)) {
             return invokeServerStoreOperation(context, (ServerStoreOpMessage) message);
@@ -365,7 +366,7 @@ public class ClusterTierActiveEntity implements ActiveServerEntity<EhcacheEntity
     LOGGER.info("Client {} validating cluster tier '{}'", clientDescriptor, storeIdentifier);
     ServerSideServerStore store = stateService.getStore(storeIdentifier);
     if (store != null) {
-      storeCompatibility.verify(store.getStoreConfiguration(), clientConfiguration);
+      storeCompatibility.verify((ServerStoreConfiguration)ConfigSerializer.bytesToObject(store.getStoreConfiguration()), clientConfiguration);
       connectedClients.put(clientDescriptor, Boolean.TRUE);
     } else {
       throw new InvalidStoreException("cluster tier '" + storeIdentifier + "' does not exist");
@@ -781,7 +782,8 @@ public class ClusterTierActiveEntity implements ActiveServerEntity<EhcacheEntity
   }
 
   private void addInflightInvalidationsForStrongCache(ClientDescriptor clientDescriptor, ClusterTierReconnectMessage reconnectMessage, ServerSideServerStore serverStore) {
-    if (serverStore.getStoreConfiguration().getConsistency().equals(Consistency.STRONG)) {
+    ServerStoreConfiguration config = (ServerStoreConfiguration)ConfigSerializer.bytesToObject(serverStore.getStoreConfiguration());
+    if (config.getConsistency().equals(Consistency.STRONG)) {
       Set<Long> invalidationsInProgress = reconnectMessage.getInvalidationsInProgress();
       LOGGER.debug("Number of Inflight Invalidations from client ID {} for cache {} is {}.", clientDescriptor.getSourceId().toLong(), storeIdentifier, invalidationsInProgress
           .size());

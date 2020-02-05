@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.terracotta.entity.PlatformConfiguration;
 import org.terracotta.entity.ServiceConfiguration;
 import org.terracotta.entity.ServiceProvider;
-import org.terracotta.entity.ServiceProviderCleanupException;
 import org.terracotta.entity.ServiceProviderConfiguration;
 import org.terracotta.entity.StateDumpCollector;
 import org.terracotta.offheapresource.OffHeapResources;
@@ -38,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.ehcache.clustered.common.internal.ClusterTierManagerConfiguration;
 
 /**
  * {@link ServiceProvider} for {@link EhcacheStateService}
@@ -85,10 +85,13 @@ public class EhcacheStateServiceProvider implements ServiceProvider {
       EhcacheStateService result;
       if (configuration instanceof EhcacheStateServiceConfig) {
         EhcacheStateServiceConfig stateServiceConfig = (EhcacheStateServiceConfig) configuration;
+        byte[] cbytes = stateServiceConfig.getConfig();
+        ClusterTierManagerConfiguration ctconfig = (ClusterTierManagerConfiguration)ConfigSerializer.bytesToObject(cbytes);
+
         EhcacheStateServiceImpl storeManagerService = new EhcacheStateServiceImpl(
-          offHeapResourcesProvider, stateServiceConfig.getConfig().getConfiguration(), stateServiceConfig.getMapper(),
-          service -> serviceMap.remove(stateServiceConfig.getConfig().getIdentifier(), service));
-        result = serviceMap.putIfAbsent(stateServiceConfig.getConfig().getIdentifier(), storeManagerService);
+          offHeapResourcesProvider, ctconfig.getConfiguration(), stateServiceConfig.getMapper(),
+          service -> serviceMap.remove(ctconfig.getIdentifier(), service));
+        result = serviceMap.putIfAbsent(ctconfig.getIdentifier(), storeManagerService);
         if (result == null) {
           result = storeManagerService;
         }

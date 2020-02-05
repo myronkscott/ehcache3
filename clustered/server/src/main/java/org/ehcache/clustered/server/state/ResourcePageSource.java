@@ -15,8 +15,7 @@
  */
 package org.ehcache.clustered.server.state;
 
-import com.tc.classloader.CommonComponent;
-import org.ehcache.clustered.common.ServerSideConfiguration;
+import org.ehcache.clustered.common.ServerResourcePool;
 import org.terracotta.offheapstore.buffersource.OffHeapBufferSource;
 import org.terracotta.offheapstore.paging.OffHeapStorageArea;
 import org.terracotta.offheapstore.paging.Page;
@@ -27,23 +26,22 @@ import static org.terracotta.offheapstore.util.MemoryUnit.GIGABYTES;
 import static org.terracotta.offheapstore.util.MemoryUnit.MEGABYTES;
 
 /**
- * Pairs a {@link ServerSideConfiguration.Pool} and an {@link UpfrontAllocatingPageSource} instance providing storage
+ * Pairs a {@link ResourcePool} and an {@link UpfrontAllocatingPageSource} instance providing storage
  * for the pool.
  */
-@CommonComponent
 public class ResourcePageSource implements PageSource {
   /**
    * A description of the resource allocation underlying this {@code PageSource}.
    */
-  private final ServerSideConfiguration.Pool pool;
+  private final ServerResourcePool pool;
   private final UpfrontAllocatingPageSource delegatePageSource;
 
-  public ResourcePageSource(ServerSideConfiguration.Pool pool) {
+  public ResourcePageSource(ServerResourcePool pool) {
     this.pool = pool;
     this.delegatePageSource = new UpfrontAllocatingPageSource(new OffHeapBufferSource(), pool.getSize(), GIGABYTES.toBytes(1), MEGABYTES.toBytes(128));
   }
 
-  public ServerSideConfiguration.Pool getPool() {
+  public ServerResourcePool getPool() {
     return pool;
   }
 

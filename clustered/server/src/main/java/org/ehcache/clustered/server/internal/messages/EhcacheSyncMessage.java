@@ -18,9 +18,6 @@ package org.ehcache.clustered.server.internal.messages;
 
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityMessage;
 
-import com.tc.classloader.CommonComponent;
-
-@CommonComponent
 public abstract class EhcacheSyncMessage extends EhcacheEntityMessage {
 
   public abstract SyncMessageType getMessageType();

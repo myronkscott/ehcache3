@@ -18,14 +18,11 @@ package org.ehcache.clustered.server.internal.messages;
 
 import org.terracotta.runnel.EnumMapping;
 
-import com.tc.classloader.CommonComponent;
-
 import static org.terracotta.runnel.EnumMappingBuilder.newEnumMappingBuilder;
 
 /**
  * SyncMessageType
  */
-@CommonComponent
 public enum SyncMessageType {
   STATE_REPO,
   DATA,

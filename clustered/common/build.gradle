@@ -20,6 +20,7 @@ plugins {
 
 dependencies {
   providedImplementation project(':api')
+  providedImplementation "org.terracotta:packaging-support:$terracottaApisVersion"
   providedImplementation "org.terracotta:entity-common-api:$terracottaApisVersion"
   providedImplementation "org.terracotta:runnel:$terracottaPlatformVersion"
 

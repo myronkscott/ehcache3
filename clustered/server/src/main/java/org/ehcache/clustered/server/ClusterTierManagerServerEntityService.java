@@ -15,7 +15,9 @@
  */
 package org.ehcache.clustered.server;
 
+import java.util.Map;
 import org.ehcache.clustered.common.EhcacheEntityVersion;
+import org.ehcache.clustered.common.ServerResourcePool;
 import org.ehcache.clustered.common.internal.ClusterTierManagerConfiguration;
 import org.ehcache.clustered.common.internal.messages.CommonConfigCodec;
 import org.ehcache.clustered.common.internal.messages.ConfigCodec;
@@ -38,12 +40,12 @@ import org.terracotta.entity.ConfigurationException;
 import org.terracotta.entity.EntityServerService;
 import org.terracotta.entity.ExecutionStrategy;
 import org.terracotta.entity.MessageCodec;
-import org.terracotta.entity.MessageCodecException;
 import org.terracotta.entity.ServiceException;
 import org.terracotta.entity.ServiceRegistry;
 import org.terracotta.entity.SyncMessageCodec;
 
 import static org.ehcache.clustered.server.ConcurrencyStrategies.clusterTierManagerConcurrency;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 
 public class ClusterTierManagerServerEntityService implements EntityServerService<EhcacheEntityMessage, EhcacheEntityResponse> {
 
@@ -69,7 +71,7 @@ public class ClusterTierManagerServerEntityService implements EntityServerServic
       configCodec.decodeClusterTierManagerConfiguration(configuration);
     EhcacheStateService ehcacheStateService;
     try {
-      ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(clusterTierManagerConfiguration, registry, DEFAULT_MAPPER));
+      ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(clusterTierManagerConfiguration), registry, DEFAULT_MAPPER));
     } catch (ServiceException e) {
       throw new ConfigurationException("Unable to retrieve EhcacheStateService: " + e.getMessage());
     }
@@ -82,7 +84,7 @@ public class ClusterTierManagerServerEntityService implements EntityServerServic
     ClusterTierManagerConfiguration clusterTierManagerConfiguration = configCodec.decodeClusterTierManagerConfiguration(configuration);
     EhcacheStateService ehcacheStateService;
     try {
-      ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(clusterTierManagerConfiguration, registry, DEFAULT_MAPPER));
+      ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(clusterTierManagerConfiguration), registry, DEFAULT_MAPPER));
     } catch (ServiceException e) {
       throw new ConfigurationException("Unable to retrieve EhcacheStateService: " + e.getMessage());
     }

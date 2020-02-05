@@ -17,22 +17,27 @@
 package org.ehcache.clustered.common;
 
 import java.io.Serializable;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import static java.util.Collections.unmodifiableMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class ServerSideConfiguration implements Serializable {
   private static final long serialVersionUID = -6203570000622687613L;
 
   private final String defaultServerResource;
-  private final Map<String, Pool> resourcePools;
+  private final Map<String, ? extends ServerResourcePool> resourcePools;
 
-  public ServerSideConfiguration(Map<String, Pool> resourcePools) {
+  public ServerSideConfiguration(Map<String, ? extends ServerResourcePool> resourcePools) {
     Set<String> badPools = new HashSet<>();
-    for (Map.Entry<String, Pool> e : resourcePools.entrySet()) {
+    for (Map.Entry<String, ? extends ServerResourcePool> e : resourcePools.entrySet()) {
       if (e.getValue().getServerResource() == null) {
         badPools.add(e.getKey());
       }
@@ -45,7 +50,7 @@ public class ServerSideConfiguration implements Serializable {
     this.resourcePools = new HashMap<>(resourcePools);
   }
 
-  public ServerSideConfiguration(String defaultServerResource, Map<String, Pool> resourcePools) {
+  public ServerSideConfiguration(String defaultServerResource, Map<String, ? extends ServerResourcePool> resourcePools) {
     if (defaultServerResource == null) {
       throw new NullPointerException("Default server resource cannot be null");
     }
@@ -63,14 +68,14 @@ public class ServerSideConfiguration implements Serializable {
     return defaultServerResource;
   }
 
-  public Map<String, Pool> getResourcePools() {
+  public Map<String, ? extends ServerResourcePool> getResourcePools() {
     return unmodifiableMap(resourcePools);
   }
 
   /**
    * The definition of a pool that can be shared by multiple caches.
    */
-  public static final class Pool implements Serializable {
+  public static final class Pool extends AbstractMap<String, Object> implements ServerResourcePool, Serializable {
     private static final long serialVersionUID = 3920576607695314256L;
 
     private final String serverResource;
@@ -112,6 +117,23 @@ public class ServerSideConfiguration implements Serializable {
       return size;
     }
 
+    @Override
+    public Set<Entry<String, Object>> entrySet() {
+      return new AbstractSet<Entry<String, Object>>() {
+        @Override
+        public Iterator<Entry<String, Object>> iterator() {
+          List<Entry<String, Object>> list = new ArrayList<>();
+          list.add(new AbstractMap.SimpleImmutableEntry<>("size", getSize()));
+          list.add(new AbstractMap.SimpleImmutableEntry<>("serverResource", getServerResource()));
+          return list.iterator();
+        }
+
+        @Override
+        public int size() {
+          return 2;
+        }
+      };
+    }
     /**
      * Returns the server resource consumed by this pool, or {@code null} if the default pool will be used.
      *

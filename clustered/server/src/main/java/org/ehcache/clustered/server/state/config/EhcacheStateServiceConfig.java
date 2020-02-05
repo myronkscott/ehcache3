@@ -16,24 +16,22 @@
 
 package org.ehcache.clustered.server.state.config;
 
-import org.ehcache.clustered.common.internal.ClusterTierManagerConfiguration;
+import com.tc.classloader.CommonComponent;
 import org.ehcache.clustered.server.KeySegmentMapper;
 import org.ehcache.clustered.server.state.EhcacheStateService;
 import org.terracotta.entity.ServiceConfiguration;
 import org.terracotta.entity.ServiceRegistry;
 
-import com.tc.classloader.CommonComponent;
-
 @CommonComponent
 public class EhcacheStateServiceConfig implements ServiceConfiguration<EhcacheStateService> {
 
-  private final ClusterTierManagerConfiguration config;
+  private final byte[] config;
   private final ServiceRegistry serviceRegistry;
   private final KeySegmentMapper mapper;
 
 
-  public EhcacheStateServiceConfig(ClusterTierManagerConfiguration config, ServiceRegistry serviceRegistry, final KeySegmentMapper mapper) {
-    this.config = config;
+  public EhcacheStateServiceConfig(byte[] configBytes, ServiceRegistry serviceRegistry, final KeySegmentMapper mapper) {
+    this.config = configBytes;
     this.serviceRegistry = serviceRegistry;
     this.mapper = mapper;
   }
@@ -43,7 +41,7 @@ public class EhcacheStateServiceConfig implements ServiceConfiguration<EhcacheSt
     return EhcacheStateService.class;
   }
 
-  public ClusterTierManagerConfiguration getConfig() {
+  public byte[] getConfig() {
     return config;
   }
 

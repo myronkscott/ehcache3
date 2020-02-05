@@ -18,12 +18,9 @@ package org.ehcache.clustered.server.internal.messages;
 
 import org.ehcache.clustered.common.internal.store.Chain;
 
-import com.tc.classloader.CommonComponent;
-
 import java.util.Collections;
 import java.util.Map;
 
-@CommonComponent
 public class EhcacheDataSyncMessage extends EhcacheSyncMessage {
 
   private final Map<Long, Chain> chainMap;

@@ -41,6 +41,7 @@ import static org.ehcache.clustered.common.internal.messages.EhcacheEntityRespon
 import static org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.success;
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.isLifecycleMessage;
 import static org.ehcache.clustered.common.internal.messages.LifecycleMessage.ValidateStoreManager;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 
 public class ClusterTierManagerActiveEntity implements ActiveServerEntity<EhcacheEntityMessage, EhcacheEntityResponse> {
 
@@ -134,7 +135,7 @@ public class ClusterTierManagerActiveEntity implements ActiveServerEntity<Ehcach
 
   @Override
   public void loadExisting() {
-    ehcacheStateService.loadExisting(configuration);
+    ehcacheStateService.loadExisting(ConfigSerializer.objectToBytes(configuration));
     LOGGER.debug("Preparing for handling Inflight Invalidations and independent Passive Evictions in loadExisting");
     reconnectComplete.set(false);
 
@@ -184,6 +185,8 @@ public class ClusterTierManagerActiveEntity implements ActiveServerEntity<Ehcach
    * @param message the {@code ValidateStoreManager} message carrying the client expected resource pool configuration
    */
   private void validate(ClientDescriptor clientDescriptor, ValidateStoreManager message) throws ClusterException {
-    ehcacheStateService.validate(message.getConfiguration());
+    if (message.getConfiguration() != null) {
+      ehcacheStateService.validate(ConfigSerializer.objectToBytes(message.getConfiguration()));
+    }
   }
 }

@@ -15,12 +15,12 @@
  */
 package org.ehcache.clustered.server.state;
 
-import org.ehcache.clustered.common.ServerSideConfiguration;
 import org.terracotta.entity.StateDumpCollector;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.ehcache.clustered.common.ServerResourcePool;
 
 public class EhcacheStateServiceDump {
   public static void dump(EhcacheStateService clusterTierManagerState, StateDumpCollector clusterTierManagerStateDump) {
@@ -28,7 +28,7 @@ public class EhcacheStateServiceDump {
     clusterTierManagerStateDump.addState("configured", String.valueOf(clusterTierManagerState.isConfigured()));
 
     StateDumpCollector poolsDump = clusterTierManagerStateDump.subStateDumpCollector("pools");
-    for (Map.Entry<String, ServerSideConfiguration.Pool> poolEntry : clusterTierManagerState.getSharedResourcePools().entrySet()) {
+    for (Map.Entry<String, ServerResourcePool> poolEntry : clusterTierManagerState.getSharedResourcePools().entrySet()) {
       StateDumpCollector poolDump = poolsDump.subStateDumpCollector(poolEntry.getKey());
       poolDump.addState("serverResource", poolEntry.getValue().getServerResource());
       poolDump.addState("size", String.valueOf(poolEntry.getValue().getSize()));

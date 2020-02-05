@@ -16,6 +16,7 @@
 
 package org.ehcache.clustered.common.internal.store;
 
+import com.tc.classloader.CommonComponent;
 import java.util.Iterator;
 
 /**
@@ -32,6 +33,7 @@ import java.util.Iterator;
  * The {@link Iterator} returned by this class allows to traverse the chain
  * starting from first element.
  */
+@CommonComponent
 public interface Chain extends Iterable<Element> {
 
   /**

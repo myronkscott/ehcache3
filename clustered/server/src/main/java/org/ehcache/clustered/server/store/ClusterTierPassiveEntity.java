@@ -55,6 +55,7 @@ import org.terracotta.entity.StateDumpCollector;
 import org.terracotta.offheapstore.exceptions.OversizeMappingException;
 
 import java.util.concurrent.TimeoutException;
+import org.ehcache.clustered.common.PoolAllocation;
 
 import static org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.getResponse;
 import static org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.success;
@@ -62,6 +63,7 @@ import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.isStateRepoOperationMessage;
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.isStoreOperationMessage;
 import static org.ehcache.clustered.server.ConcurrencyStrategies.clusterTierConcurrency;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 
 /**
  * ClusterTierPassiveEntity
@@ -112,7 +114,7 @@ public class ClusterTierPassiveEntity implements PassiveServerEntity<EhcacheEnti
 
   @Override
   public void createNew() throws ConfigurationException {
-    stateService.createStore(storeIdentifier, configuration, false);
+    stateService.createStore(storeIdentifier, ConfigSerializer.objectToBytes(configuration), false);
     management.entityCreated();
   }
 
@@ -166,7 +168,7 @@ public class ClusterTierPassiveEntity implements PassiveServerEntity<EhcacheEnti
   private EhcacheEntityResponse invokePassiveInternal(InvokeContext context, EhcacheEntityMessage message) {
     if (message instanceof EhcacheOperationMessage) {
       EhcacheOperationMessage operationMessage = (EhcacheOperationMessage) message;
-      try (EhcacheStateContext ignored = stateService.beginProcessing(operationMessage, storeIdentifier)) {
+      try (EhcacheStateContext ignored = stateService.beginProcessing(()->EhcacheMessageType.isTrackedOperationMessage(operationMessage.getMessageType()), storeIdentifier)) {
         EhcacheMessageType messageType = operationMessage.getMessageType();
         if (isStoreOperationMessage(messageType)) {
           invokeServerStoreOperation((ServerStoreOpMessage) message);

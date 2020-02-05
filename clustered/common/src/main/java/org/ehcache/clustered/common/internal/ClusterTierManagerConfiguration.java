@@ -16,12 +16,15 @@
 
 package org.ehcache.clustered.common.internal;
 
+import java.io.Serializable;
 import org.ehcache.clustered.common.ServerSideConfiguration;
 
 /**
  * ClusterTierManagerConfiguration
  */
-public class ClusterTierManagerConfiguration {
+public class ClusterTierManagerConfiguration implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private final String identifier;
   private final ServerSideConfiguration configuration;

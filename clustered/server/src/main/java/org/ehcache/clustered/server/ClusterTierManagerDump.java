@@ -21,6 +21,7 @@ import org.ehcache.clustered.common.internal.ClusterTierManagerConfiguration;
 import org.terracotta.entity.StateDumpCollector;
 
 import java.util.Map;
+import org.ehcache.clustered.common.ServerResourcePool;
 
 class ClusterTierManagerDump {
 
@@ -30,7 +31,7 @@ class ClusterTierManagerDump {
     ServerSideConfiguration ssc = configuration.getConfiguration();
     configDump.addState("defaultServerResource", String.valueOf(ssc.getDefaultServerResource()));
     StateDumpCollector poolsDump = configDump.subStateDumpCollector("pools");
-    for (Map.Entry<String, ServerSideConfiguration.Pool> poolEntry : ssc.getResourcePools().entrySet()) {
+    for (Map.Entry<String, ? extends ServerResourcePool> poolEntry : ssc.getResourcePools().entrySet()) {
       StateDumpCollector poolDump = poolsDump.subStateDumpCollector(poolEntry.getKey());
       poolDump.addState("serverResource", poolEntry.getValue().getServerResource());
       poolDump.addState("size", String.valueOf(poolEntry.getValue().getSize()));

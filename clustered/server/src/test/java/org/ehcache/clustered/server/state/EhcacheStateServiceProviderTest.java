@@ -82,16 +82,16 @@ public class EhcacheStateServiceProviderTest {
     EhcacheStateServiceProvider serviceProvider = new EhcacheStateServiceProvider();
     serviceProvider.initialize(serviceProviderConfiguration, platformConfiguration);
 
-    EhcacheStateService ehcacheStateService = serviceProvider.getService(1L, new EhcacheStateServiceConfig(tierManagerConfiguration, null, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = serviceProvider.getService(1L, new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(tierManagerConfiguration), null, DEFAULT_MAPPER));
 
     assertNotNull(ehcacheStateService);
 
-    EhcacheStateService sameStateService = serviceProvider.getService(1L, new EhcacheStateServiceConfig(tierManagerConfiguration, null, DEFAULT_MAPPER));
+    EhcacheStateService sameStateService = serviceProvider.getService(1L, new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(tierManagerConfiguration), null, DEFAULT_MAPPER));
 
     assertSame(ehcacheStateService, sameStateService);
 
     ClusterTierManagerConfiguration otherConfiguration = new ClusterTierManagerConfiguration("otherIdentifier", new ServerSideConfiguration(emptyMap()));
-    EhcacheStateService anotherStateService = serviceProvider.getService(2L, new EhcacheStateServiceConfig(otherConfiguration, null, DEFAULT_MAPPER));
+    EhcacheStateService anotherStateService = serviceProvider.getService(2L, new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(otherConfiguration), null, DEFAULT_MAPPER));
 
     assertNotNull(anotherStateService);
     assertNotSame(ehcacheStateService, anotherStateService);
@@ -103,7 +103,7 @@ public class EhcacheStateServiceProviderTest {
     EhcacheStateServiceProvider serviceProvider = new EhcacheStateServiceProvider();
     serviceProvider.initialize(serviceProviderConfiguration, platformConfiguration);
 
-    EhcacheStateServiceConfig configuration = new EhcacheStateServiceConfig(tierManagerConfiguration, null, DEFAULT_MAPPER);
+    EhcacheStateServiceConfig configuration = new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(tierManagerConfiguration), null, DEFAULT_MAPPER);
     EhcacheStateService ehcacheStateService = serviceProvider.getService(1L, configuration);
 
     ehcacheStateService.destroy();
@@ -118,13 +118,13 @@ public class EhcacheStateServiceProviderTest {
 
     ClusterTierManagerConfiguration otherConfiguration = new ClusterTierManagerConfiguration("otherIdentifier", new ServerSideConfiguration(emptyMap()));
 
-    EhcacheStateService ehcacheStateService = serviceProvider.getService(1L, new EhcacheStateServiceConfig(tierManagerConfiguration, null, DEFAULT_MAPPER));
-    EhcacheStateService anotherStateService = serviceProvider.getService(2L, new EhcacheStateServiceConfig(otherConfiguration, null, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateService = serviceProvider.getService(1L, new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(tierManagerConfiguration), null, DEFAULT_MAPPER));
+    EhcacheStateService anotherStateService = serviceProvider.getService(2L, new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(otherConfiguration), null, DEFAULT_MAPPER));
 
     serviceProvider.prepareForSynchronization();
 
-    EhcacheStateService ehcacheStateServiceAfterClear = serviceProvider.getService(1L, new EhcacheStateServiceConfig(tierManagerConfiguration, null, DEFAULT_MAPPER));
-    EhcacheStateService anotherStateServiceAfterClear = serviceProvider.getService(2L, new EhcacheStateServiceConfig(otherConfiguration, null, DEFAULT_MAPPER));
+    EhcacheStateService ehcacheStateServiceAfterClear = serviceProvider.getService(1L, new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(tierManagerConfiguration), null, DEFAULT_MAPPER));
+    EhcacheStateService anotherStateServiceAfterClear = serviceProvider.getService(2L, new EhcacheStateServiceConfig(ConfigSerializer.objectToBytes(otherConfiguration), null, DEFAULT_MAPPER));
 
     assertNotSame(ehcacheStateService, ehcacheStateServiceAfterClear);
     assertNotSame(anotherStateService, anotherStateServiceAfterClear);

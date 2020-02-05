@@ -15,10 +15,12 @@
  */
 package org.ehcache.clustered.server.management;
 
+import java.util.Map;
 import org.ehcache.clustered.common.ServerSideConfiguration;
 import org.terracotta.management.service.monitoring.registry.provider.AliasBinding;
 
 import java.util.Objects;
+import org.ehcache.clustered.common.ServerResourcePool;
 
 class PoolBinding extends AliasBinding {
 
@@ -32,7 +34,7 @@ class PoolBinding extends AliasBinding {
 
   private final AllocationType allocationType;
 
-  PoolBinding(String identifier, ServerSideConfiguration.Pool serverStore, AllocationType allocationType) {
+  PoolBinding(String identifier, ServerResourcePool serverStore, AllocationType allocationType) {
     super(identifier, serverStore);
     this.allocationType = Objects.requireNonNull(allocationType);
   }
@@ -42,8 +44,8 @@ class PoolBinding extends AliasBinding {
   }
 
   @Override
-  public ServerSideConfiguration.Pool getValue() {
-    return (ServerSideConfiguration.Pool) super.getValue();
+  public ServerResourcePool getValue() {
+    return (ServerResourcePool)super.getValue();
   }
 
   @Override

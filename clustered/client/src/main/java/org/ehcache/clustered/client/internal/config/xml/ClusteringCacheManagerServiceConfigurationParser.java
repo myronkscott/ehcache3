@@ -59,6 +59,7 @@ import javax.xml.transform.stream.StreamSource;
 import static org.ehcache.clustered.client.internal.config.xml.ClusteredCacheConstants.NAMESPACE;
 import static org.ehcache.clustered.client.internal.config.xml.ClusteredCacheConstants.XML_SCHEMA;
 import static org.ehcache.clustered.client.internal.config.xml.ClusteredCacheConstants.TC_CLUSTERED_NAMESPACE_PREFIX;
+import org.ehcache.clustered.common.ServerResourcePool;
 import static org.ehcache.xml.XmlModel.convertToJavaTimeUnit;
 
 /**
@@ -345,7 +346,7 @@ public class ClusteringCacheManagerServiceConfigurationParser extends BaseConfig
           Element defaultResourceElement = createDefaultServerResourceElement(doc, defaultServerResource);
           serverSideConfigurationElem.appendChild(defaultResourceElement);
         }
-        Map<String, ServerSideConfiguration.Pool> resourcePools = serverSideConfiguration.getResourcePools();
+        Map<String, ? extends ServerResourcePool> resourcePools = serverSideConfiguration.getResourcePools();
         if (resourcePools != null) {
           resourcePools.forEach(
             (key, value) -> {
@@ -367,7 +368,7 @@ public class ClusteringCacheManagerServiceConfigurationParser extends BaseConfig
   }
 
 
-  private Element createSharedPoolElement(Document doc, String poolName, ServerSideConfiguration.Pool pool) {
+  private Element createSharedPoolElement(Document doc, String poolName, ServerResourcePool pool) {
     Element poolElement = doc.createElement(TC_CLUSTERED_NAMESPACE_PREFIX + SHARED_POOL_ELEMENT_NAME);
     poolElement.setAttribute(NAME_ATTRIBUTE_NAME, poolName);
     String from = pool.getServerResource();

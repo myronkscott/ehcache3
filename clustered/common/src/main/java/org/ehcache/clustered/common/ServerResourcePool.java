@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.ehcache.clustered.common.internal.store;
+package org.ehcache.clustered.common;
 
 import com.tc.classloader.CommonComponent;
-import java.nio.ByteBuffer;
 
 /**
- * Building blocks of {@link Chain}
+ *
  */
 @CommonComponent
-public interface Element {
-
-  /**
-   * The data payload stored as element.
-   * This is binary representation of key/value pairs
-   * or key/func(value) pairs
-   *
-   * @return the payload associated with this {@link Element}
-   */
-  ByteBuffer getPayload();
+public interface ServerResourcePool {
+  String getServerResource();
+  long getSize();
 }

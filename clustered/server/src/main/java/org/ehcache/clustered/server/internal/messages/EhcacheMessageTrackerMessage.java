@@ -16,7 +16,6 @@
 
 package org.ehcache.clustered.server.internal.messages;
 
-import com.tc.classloader.CommonComponent;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityMessage;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse;
 import org.terracotta.client.message.tracker.OOOMessageHandler;
@@ -30,7 +29,6 @@ import static java.util.stream.Collectors.toMap;
  * Message sending messages that are tracked for duplication. If a passive becoming active receives
  * a duplicate, it needs to discard it.
  */
-@CommonComponent
 public class EhcacheMessageTrackerMessage extends EhcacheSyncMessage {
 
   private final int segmentId;

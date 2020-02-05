@@ -36,6 +36,7 @@ import java.util.Optional;
 
 import static org.terracotta.runnel.EnumMappingBuilder.newEnumMappingBuilder;
 import static org.terracotta.runnel.StructBuilder.newStructBuilder;
+import org.ehcache.clustered.common.ServerResourcePool;
 
 /**
  * Encodes and decodes configuration objects such as {@link ServerSideConfiguration} and {@link ServerStoreConfiguration}.
@@ -180,7 +181,7 @@ public class CommonConfigCodec implements ConfigCodec {
 
     if (!configuration.getResourcePools().isEmpty()) {
       StructArrayEncoder<? extends StructEncoder<?>> poolsEncoder = encoder.structs(POOLS_SUB_STRUCT);
-      for (Map.Entry<String, ServerSideConfiguration.Pool> poolEntry : configuration.getResourcePools().entrySet()) {
+      for (Map.Entry<String, ? extends ServerResourcePool> poolEntry : configuration.getResourcePools().entrySet()) {
         StructEncoder<?> poolEncoder = poolsEncoder.add();
         poolEncoder.string(POOL_NAME_FIELD, poolEntry.getKey())
           .int64(POOL_SIZE_FIELD, poolEntry.getValue().getSize());
@@ -197,7 +198,7 @@ public class CommonConfigCodec implements ConfigCodec {
   public ServerSideConfiguration decodeServerSideConfiguration(StructDecoder<?> decoder) {
     String defaultResource = decoder.string(DEFAULT_RESOURCE_FIELD);
 
-    HashMap<String, ServerSideConfiguration.Pool> resourcePools = new HashMap<>();
+    HashMap<String, ServerResourcePool> resourcePools = new HashMap<>();
     StructArrayDecoder<? extends StructDecoder<?>> poolsDecoder = decoder.structs(POOLS_SUB_STRUCT);
     if (poolsDecoder != null) {
       for (int i = 0; i < poolsDecoder.length(); i++) {

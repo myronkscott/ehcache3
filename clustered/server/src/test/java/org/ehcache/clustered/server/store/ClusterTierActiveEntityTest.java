@@ -85,6 +85,7 @@ import java.util.function.BiConsumer;
 
 import static org.ehcache.clustered.ChainUtils.createPayload;
 import static org.ehcache.clustered.Matchers.hasPayloads;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
@@ -926,7 +927,7 @@ public class ClusterTierActiveEntityTest {
   public void testLoadExistingRecoversInflightInvalidationsForEventualCache() throws Exception {
     ClusterTierActiveEntity activeEntity = new ClusterTierActiveEntity(defaultRegistry, defaultConfiguration, DEFAULT_MAPPER);
     EhcacheStateServiceImpl ehcacheStateService = defaultRegistry.getStoreManagerService();
-    ehcacheStateService.createStore(defaultStoreName, defaultStoreConfiguration, false);  //Passive would have done this before failover
+    ehcacheStateService.createStore(defaultStoreName, ConfigSerializer.objectToBytes(defaultStoreConfiguration), false);  //Passive would have done this before failover
 
     InvalidationTracker invalidationTracker = ehcacheStateService.getInvalidationTracker(defaultStoreName);
 
@@ -1004,7 +1005,7 @@ public class ClusterTierActiveEntityTest {
   public void testActiveMessageTracking() throws Exception {
     ClusterTierActiveEntity activeEntity = new ClusterTierActiveEntity(defaultRegistry, defaultConfiguration, DEFAULT_MAPPER);
     EhcacheStateServiceImpl ehcacheStateService = defaultRegistry.getStoreManagerService();
-    ehcacheStateService.createStore(defaultStoreName, defaultStoreConfiguration, false);  //hack to enable message tracking on active
+    ehcacheStateService.createStore(defaultStoreName, ConfigSerializer.objectToBytes(defaultStoreConfiguration), false);  //hack to enable message tracking on active
 
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());
@@ -1027,7 +1028,7 @@ public class ClusterTierActiveEntityTest {
   public void testShortIterationIsNotTracked() throws Exception {
     ClusterTierActiveEntity activeEntity = new ClusterTierActiveEntity(defaultRegistry, defaultConfiguration, DEFAULT_MAPPER);
     EhcacheStateServiceImpl ehcacheStateService = defaultRegistry.getStoreManagerService();
-    ehcacheStateService.createStore(defaultStoreName, defaultStoreConfiguration, false);  //hack to enable message tracking on active
+    ehcacheStateService.createStore(defaultStoreName, ConfigSerializer.objectToBytes(defaultStoreConfiguration), false);  //hack to enable message tracking on active
 
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());
@@ -1051,7 +1052,7 @@ public class ClusterTierActiveEntityTest {
   public void testLongIteration() throws Exception {
     ClusterTierActiveEntity activeEntity = new ClusterTierActiveEntity(defaultRegistry, defaultConfiguration, DEFAULT_MAPPER);
     EhcacheStateServiceImpl ehcacheStateService = defaultRegistry.getStoreManagerService();
-    ehcacheStateService.createStore(defaultStoreName, defaultStoreConfiguration, false);  //hack to enable message tracking on active
+    ehcacheStateService.createStore(defaultStoreName, ConfigSerializer.objectToBytes(defaultStoreConfiguration), false);  //hack to enable message tracking on active
 
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());
@@ -1086,7 +1087,7 @@ public class ClusterTierActiveEntityTest {
   public void testExplicitIteratorClose() throws Exception {
     ClusterTierActiveEntity activeEntity = new ClusterTierActiveEntity(defaultRegistry, defaultConfiguration, DEFAULT_MAPPER);
     EhcacheStateServiceImpl ehcacheStateService = defaultRegistry.getStoreManagerService();
-    ehcacheStateService.createStore(defaultStoreName, defaultStoreConfiguration, false);  //hack to enable message tracking on active
+    ehcacheStateService.createStore(defaultStoreName, ConfigSerializer.objectToBytes(defaultStoreConfiguration), false);  //hack to enable message tracking on active
 
     TestInvokeContext context = new TestInvokeContext();
     activeEntity.connected(context.getClientDescriptor());

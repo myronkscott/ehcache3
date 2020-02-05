@@ -17,7 +17,6 @@
 package org.ehcache.clustered.client.internal;
 
 import org.ehcache.CachePersistenceException;
-import org.ehcache.clustered.client.config.ClusteringServiceConfiguration;
 import org.ehcache.clustered.client.config.ClusteringServiceConfiguration.ClientMode;
 import org.ehcache.clustered.client.config.Timeouts;
 import org.ehcache.clustered.client.config.builders.TimeoutsBuilder;

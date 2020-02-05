@@ -15,17 +15,22 @@
  */
 package org.ehcache.clustered.client.config.builders;
 
-import java.util.HashMap;
+import java.util.AbstractMap;
 import java.util.Map;
 
 import org.ehcache.clustered.client.config.ClusteringServiceConfiguration;
 import org.ehcache.clustered.common.ServerSideConfiguration;
-import org.ehcache.clustered.common.ServerSideConfiguration.Pool;
 import org.ehcache.config.Builder;
 import org.ehcache.config.units.MemoryUnit;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import org.ehcache.clustered.common.ServerResourcePool;
+import org.ehcache.clustered.common.ServerSideConfiguration.Pool;
 
 /**
  * Constructs the server-side portion of a {@link ClusteringServiceConfiguration}.  An instance of this
@@ -57,7 +62,7 @@ public class ServerSideConfigurationBuilder implements Builder<ClusteringService
   protected ServerSideConfigurationBuilder(ServerSideConfiguration serverSideConfiguration) {
     this.clientSideBuilder = null;
     this.defaultServerResource = serverSideConfiguration.getDefaultServerResource();
-    this.pools = serverSideConfiguration.getResourcePools();
+    this.pools = mapToPools(serverSideConfiguration.getResourcePools());
   }
 
   private ServerSideConfigurationBuilder(ServerSideConfigurationBuilder original, String defaultServerResource) {
@@ -66,14 +71,28 @@ public class ServerSideConfigurationBuilder implements Builder<ClusteringService
     this.defaultServerResource = defaultServerResource;
   }
 
-  private ServerSideConfigurationBuilder(ServerSideConfigurationBuilder original, String poolName, Pool poolDefinition) {
+  private ServerSideConfigurationBuilder(ServerSideConfigurationBuilder original, String poolName, ServerResourcePool poolDefinition) {
     this.clientSideBuilder = original.clientSideBuilder;
     this.defaultServerResource = original.defaultServerResource;
     Map<String, Pool> pools = new HashMap<>(original.pools);
-    if (pools.put(poolName, poolDefinition) != null) {
+    if (pools.put(poolName, new Pool(poolDefinition.getSize(), poolDefinition.getServerResource())) != null) {
       throw new IllegalArgumentException("Pool '" + poolName + "' already defined");
     }
     this.pools = unmodifiableMap(pools);
+  }
+
+  private static Map<String, Pool> mapToPools(Map<String,? extends ServerResourcePool> src) {
+    Map<String,Pool> pools = new ConcurrentHashMap<>();
+    src.entrySet().forEach(e->pools.put(e.getKey(), new Pool(e.getValue().getSize(), e.getValue().getServerResource())));
+    return pools;
+//    return new AbstractMap<String, Pool>() {
+//      @Override
+//      public Set<Map.Entry<String, Pool>> entrySet() {
+//        return src.entrySet().stream()
+//                .map(e->new AbstractMap.SimpleEntry<>(e.getKey(), new Pool(e.getValue().getSize(), e.getValue().getServerResource())))
+//                .collect(Collectors.toSet());
+//      }
+//    };
   }
 
   /**
@@ -122,7 +141,7 @@ public class ServerSideConfigurationBuilder implements Builder<ClusteringService
    *
    * @return a clustering service configuration builder
    */
-  public ServerSideConfigurationBuilder resourcePool(String name, Pool definition) {
+  public ServerSideConfigurationBuilder resourcePool(String name, ServerResourcePool definition) {
     return new ServerSideConfigurationBuilder(this, name, definition);
   }
 

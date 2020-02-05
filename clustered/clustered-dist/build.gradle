@@ -44,19 +44,36 @@ dependencies {
 configurations {
   kit
   serverLibs
+  serverApis
 }
 
 dependencies {
   compileOnly "org.terracotta.internal:client-runtime:$terracottaCoreVersion"
   compileOnly "org.terracotta:lease-api:$terracottaPlatformVersion"
+    
+  serverApis ("org.terracotta:statistics:$statisticVersion") {
+    exclude group: 'org.slf4j'
+  }
+  serverApis ("org.terracotta.management:monitoring-service-api:$terracottaPlatformVersion") {
+    exclude group: 'org.slf4j'
+  }
+  serverApis ("org.terracotta.management.dist:mnm-common:$terracottaPlatformVersion") {
+    exclude group: 'org.slf4j'
+  }
 
+  
   serverLibs(project(':clustered:server')) {
     exclude group: 'org.terracotta', module: 'entity-server-api'
     exclude group: 'org.terracotta', module: 'entity-common-api'
     exclude group: 'org.terracotta', module: 'packaging-support'
     exclude group: 'org.terracotta.internal', module: 'tc-config-parser'
+    exclude group: 'org.terracotta', module: 'standard-cluster-services'
+    exclude group: 'org.terracotta', module: 'statistics'
+    exclude group: 'org.terracotta.management'
+    exclude group: 'org.terracotta.management.dist'
+    exclude group: 'org.slf4j'
   }
-
+  
   // Needed because declared as provided in the different projects
   serverLibs "org.terracotta:runnel:$parent.terracottaPlatformVersion"
 
@@ -100,8 +117,17 @@ distributions {
         }
         includeEmptyDirs = false
       }
+      into ("server/plugins/api") {
+        from configurations.serverApis
+//        include { f -> 
+//          f.name.contains('-api-')
+//        }
+      }
       into ("server/plugins/lib") {
         from configurations.serverLibs
+//        exclude { f -> 
+//          f.name.contains('-api-')
+//        }
       }
       into ('client/ehcache') {
         from jar

@@ -25,7 +25,6 @@ import org.ehcache.clustered.common.internal.exceptions.DestroyInProgressExcepti
 import org.ehcache.clustered.common.internal.exceptions.InvalidServerSideConfigurationException;
 import org.ehcache.clustered.common.internal.exceptions.InvalidStoreException;
 import org.ehcache.clustered.common.internal.exceptions.LifecycleException;
-import org.ehcache.clustered.common.internal.messages.EhcacheOperationMessage;
 import org.ehcache.clustered.server.repo.StateRepositoryManager;
 import org.ehcache.clustered.server.state.EhcacheStateContext;
 import org.ehcache.clustered.server.state.EhcacheStateService;
@@ -48,11 +47,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
+import org.ehcache.clustered.common.ServerResourcePool;
+import org.ehcache.clustered.server.state.ConfigSerializer;
 import static org.terracotta.offheapresource.OffHeapResourceIdentifier.identifier;
 import static org.terracotta.statistics.StatisticsManager.tags;
 import static org.terracotta.statistics.ValueStatistics.supply;
@@ -136,7 +138,7 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
   }
 
   @Override
-  public ServerSideServerStore loadStore(String name, ServerStoreConfiguration serverStoreConfiguration) {
+  public ServerSideServerStore loadStore(String name, byte[] serverStoreConfiguration) {
     ServerStoreImpl store = getStore(name);
     if (store == null) {
       LOGGER.warn("Cluster tier {} not properly recovered on fail over.", name);
@@ -162,7 +164,7 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
   }
 
   @Override
-  public Map<String, ServerSideConfiguration.Pool> getSharedResourcePools() {
+  public Map<String, ServerResourcePool> getSharedResourcePools() {
     return sharedResourcePools.entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().getPool()));
   }
 
@@ -172,7 +174,7 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
   }
 
   @Override
-  public ServerSideConfiguration.Pool getDedicatedResourcePool(String name) {
+  public ServerResourcePool getDedicatedResourcePool(String name) {
     ResourcePageSource resourcePageSource = dedicatedResourcePools.get(name);
     return resourcePageSource == null ? null : resourcePageSource.getPool();
   }
@@ -182,7 +184,9 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
     return dedicatedResourcePools.get(name);
   }
 
-  public void validate(ServerSideConfiguration configuration) throws ClusterException {
+  @Override
+  public void validate(byte[] config) throws ClusterException {
+    ServerSideConfiguration configuration = (config != null) ? (ServerSideConfiguration)ConfigSerializer.bytesToObject(config) : null;
     if (destroyInProgress) {
       throw new DestroyInProgressException("Cluster Tier Manager marked in progress for destroy - clean up by destroying or re-creating");
     }
@@ -213,8 +217,8 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
     }
 
     try {
-      for (Map.Entry<String, ServerSideConfiguration.Pool> pool : resolveResourcePools(incomingConfig).entrySet()) {
-        ServerSideConfiguration.Pool serverPool = this.sharedResourcePools.get(pool.getKey()).getPool();
+      for (Map.Entry<String, ServerResourcePool> pool : resolveResourcePools(incomingConfig).entrySet()) {
+        ServerResourcePool serverPool = this.sharedResourcePools.get(pool.getKey()).getPool();
 
         if (!serverPool.equals(pool.getValue())) {
           throw new InvalidServerSideConfigurationException("Pool '" + pool.getKey() + "' not equal. "
@@ -227,10 +231,10 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
     }
   }
 
-  private static Map<String, ServerSideConfiguration.Pool> resolveResourcePools(ServerSideConfiguration configuration) throws ConfigurationException {
-    Map<String, ServerSideConfiguration.Pool> pools = new HashMap<>();
-    for (Map.Entry<String, ServerSideConfiguration.Pool> e : configuration.getResourcePools().entrySet()) {
-      ServerSideConfiguration.Pool pool = e.getValue();
+  private static Map<String, ServerResourcePool> resolveResourcePools(ServerSideConfiguration configuration) throws ConfigurationException {
+    Map<String, ServerResourcePool> pools = new HashMap<>();
+    for (Map.Entry<String, ? extends ServerResourcePool> e : configuration.getResourcePools().entrySet()) {
+      ServerResourcePool pool = e.getValue();
       if (pool.getServerResource() == null) {
         if (configuration.getDefaultServerResource() == null) {
           throw new ConfigurationException("Pool '" + e.getKey() + "' has no defined server resource, and no default value was available");
@@ -266,10 +270,10 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
     configured = true;
   }
 
-  private Map<String, ResourcePageSource> createPools(Map<String, ServerSideConfiguration.Pool> resourcePools) throws ConfigurationException {
+  private Map<String, ResourcePageSource> createPools(Map<String, ServerResourcePool> resourcePools) throws ConfigurationException {
     Map<String, ResourcePageSource> pools = new HashMap<>();
     try {
-      for (Map.Entry<String, ServerSideConfiguration.Pool> e : resourcePools.entrySet()) {
+      for (Map.Entry<String, ServerResourcePool> e : resourcePools.entrySet()) {
         pools.put(e.getKey(), createPageSource(e.getKey(), e.getValue()));
       }
     } catch (ConfigurationException | RuntimeException e) {
@@ -285,7 +289,7 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
     return pools;
   }
 
-  private ResourcePageSource createPageSource(String poolName, ServerSideConfiguration.Pool pool) throws ConfigurationException {
+  private ResourcePageSource createPageSource(String poolName, ServerResourcePool pool) throws ConfigurationException {
     ResourcePageSource pageSource;
     OffHeapResource source = offHeapResources.getOffHeapResource(identifier(pool.getServerResource()));
     if (source == null) {
@@ -392,7 +396,7 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
   }
 
   private void releasePool(String poolType, String poolName, ResourcePageSource resourcePageSource) {
-    ServerSideConfiguration.Pool pool = resourcePageSource.getPool();
+    ServerResourcePool pool = resourcePageSource.getPool();
     OffHeapResource source = offHeapResources.getOffHeapResource(identifier(pool.getServerResource()));
     if (source != null) {
       unRegisterPoolStatistics(resourcePageSource);
@@ -401,15 +405,17 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
     }
   }
 
-  public ServerStoreImpl createStore(String name, ServerStoreConfiguration serverStoreConfiguration, boolean forActive) throws ConfigurationException {
+  @Override
+  public ServerStoreImpl createStore(String name, byte[] serverStoreConfiguration, boolean forActive) throws ConfigurationException {
+    ServerStoreConfiguration config = (ServerStoreConfiguration)ConfigSerializer.bytesToObject(serverStoreConfiguration);
     if (this.stores.containsKey(name)) {
       throw new ConfigurationException("cluster tier '" + name + "' already exists");
     }
 
     ServerStoreImpl serverStore;
-    ResourcePageSource resourcePageSource = getPageSource(name, serverStoreConfiguration.getPoolAllocation());
+    ResourcePageSource resourcePageSource = getPageSource(name, config.getPoolAllocation());
     try {
-      serverStore = new ServerStoreImpl(serverStoreConfiguration, resourcePageSource, mapper, serverStoreConfiguration.isWriteBehindConfigured());
+      serverStore = new ServerStoreImpl(config, resourcePageSource, mapper, config.isWriteBehindConfigured());
     } catch (RuntimeException rte) {
       releaseDedicatedPool(name, resourcePageSource);
       throw new ConfigurationException("Failed to create ServerStore.", rte);
@@ -417,7 +423,7 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
 
     stores.put(name, serverStore);
     if (!forActive) {
-      if (serverStoreConfiguration.getConsistency() == Consistency.EVENTUAL) {
+      if (config.getConsistency() == Consistency.EVENTUAL) {
         this.invalidationTrackers.put(name, new InvalidationTrackerImpl());
       }
     }
@@ -481,19 +487,18 @@ public class EhcacheStateServiceImpl implements EhcacheStateService {
   }
 
   @Override
-  public void loadExisting(ServerSideConfiguration configuration) {
+  public void loadExisting(byte[] configuration) {
     try {
       validate(configuration);
     } catch (ClusterException e) {
       throw new AssertionError("Mismatch between entity configuration and the know configuration of the service.\n" +
-                               "Entity configuration:" + configuration + "\n" +
                                "Existing: defaultResource: " + getDefaultServerResource() + "\n" +
                                "\tsharedPools: " + sharedResourcePools);
     }
   }
 
   @Override
-  public EhcacheStateContext beginProcessing(EhcacheOperationMessage message, String name) {
+  public EhcacheStateContext beginProcessing(Callable<Boolean> isBeingTracked, String name) {
     return () -> {};
   }
 

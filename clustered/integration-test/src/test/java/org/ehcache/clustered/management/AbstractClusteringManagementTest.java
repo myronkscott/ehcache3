@@ -67,10 +67,14 @@ import static org.ehcache.config.builders.ResourcePoolsBuilder.newResourcePoolsB
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static org.terracotta.testing.rules.BasicExternalClusterBuilder.newCluster;
 
 @SuppressWarnings("rawtypes") // Need to suppress because of a Javac bug giving a rawtype on AbstractManageableNode::isManageable.
 public abstract class AbstractClusteringManagementTest extends ClusteredTests {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractClusteringManagementTest.class);
 
   private static final String RESOURCE_CONFIG =
     "<config xmlns:ohr='http://www.terracotta.org/config/offheap-resource'>"
@@ -333,11 +337,14 @@ public abstract class AbstractClusteringManagementTest extends ClusteredTests {
         nmsService.waitForMessage(message -> {
           if (message.getType().equals("NOTIFICATION")) {
             for (ContextualNotification notification : message.unwrap(ContextualNotification.class)) {
-              if (waitingFor.remove(notification.getType())) {
+              if ("org.terracotta.management.entity.nms.client.NmsEntity".equals(notification.getContext().get("entityType"))) {
+                LOGGER.info("IGNORE:" + notification); // this is the passive NmsEntity, sometimes we catch it, sometimes not
+              } else if (waitingFor.remove(notification.getType())) {
                 existingOnes.add(notification);
-//                System.out.println("Remove " + notification.getType());
-//                System.out.println("Still waiting for: " + waitingFor);
+                LOGGER.debug("Remove " + notification);
+                LOGGER.debug("Still waiting for: " + waitingFor);
               } else {
+                LOGGER.debug("Extra: " + notification);
                 missingOnes.add(notification);
               }
             }

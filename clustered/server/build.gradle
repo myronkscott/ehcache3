@@ -37,3 +37,23 @@ dependencies {
   testImplementation project(':clustered:test-utils')
   testImplementation ("org.terracotta:passthrough-server:$terracottaPassthroughTestingVersion")
 }
+
+configurations {
+    serverPlugin {
+        transitive false
+    }
+}
+
+dependencies {
+    serverPlugin project(':clustered:common')
+    serverPlugin "org.terracotta:offheap-store:$offheapVersion"
+    serverPlugin "org.terracotta:client-message-tracker:$terracottaPlatformVersion"
+    serverPlugin "org.terracotta:offheap-resource:$terracottaPlatformVersion"
+    serverPlugin "org.terracotta:runnel:$terracottaPlatformVersion"
+}
+
+jar {
+  manifest {
+    attributes('Class-Path': configurations.serverPlugin.collect { it.getName() }.join(' '))
+  }
+}

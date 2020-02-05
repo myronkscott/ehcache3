@@ -16,35 +16,43 @@
 
 package org.ehcache.clustered.server.state;
 
-import org.ehcache.clustered.common.ServerSideConfiguration;
-import org.ehcache.clustered.common.internal.ServerStoreConfiguration;
 import org.ehcache.clustered.common.internal.exceptions.ClusterException;
-import org.ehcache.clustered.common.internal.messages.EhcacheOperationMessage;
 import org.ehcache.clustered.server.ServerSideServerStore;
 import org.ehcache.clustered.server.repo.StateRepositoryManager;
 import org.terracotta.entity.ConfigurationException;
 
 import com.tc.classloader.CommonComponent;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.Serializable;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import org.ehcache.clustered.common.ServerResourcePool;
 
 @CommonComponent
 public interface EhcacheStateService {
 
   String getDefaultServerResource();
 
-  Map<String, ServerSideConfiguration.Pool> getSharedResourcePools();
+  Map<String, ServerResourcePool> getSharedResourcePools();
 
-  ResourcePageSource getSharedResourcePageSource(String name);
+  Object getSharedResourcePageSource(String name);
 
-  ServerSideConfiguration.Pool getDedicatedResourcePool(String name);
+  ServerResourcePool getDedicatedResourcePool(String name);
 
-  ResourcePageSource getDedicatedResourcePageSource(String name);
+  Object getDedicatedResourcePageSource(String name);
 
   ServerSideServerStore getStore(String name);
 
-  ServerSideServerStore loadStore(String name, ServerStoreConfiguration serverStoreConfiguration);
+  ServerSideServerStore loadStore(String name, byte[] serverStoreConfiguration);
 
   Set<String> getStores();
 
@@ -52,11 +60,11 @@ public interface EhcacheStateService {
 
   void destroy();
 
-  void validate(ServerSideConfiguration configuration) throws ClusterException;
+  void validate(byte[] configuration) throws ClusterException;
 
   void configure() throws ConfigurationException;
 
-  ServerSideServerStore createStore(String name, ServerStoreConfiguration serverStoreConfiguration, boolean forActive) throws ConfigurationException;
+  ServerSideServerStore createStore(String name, byte[] serverStoreConfiguration, boolean forActive) throws ConfigurationException;
 
   void destroyServerStore(String name) throws ClusterException;
 
@@ -66,7 +74,7 @@ public interface EhcacheStateService {
 
   InvalidationTracker getInvalidationTracker(String name);
 
-  void loadExisting(ServerSideConfiguration configuration);
+  void loadExisting(byte[] config);
 
-  EhcacheStateContext beginProcessing(EhcacheOperationMessage message, String name);
+  EhcacheStateContext beginProcessing(Callable<Boolean> isBeingTracked, String name);
 }
