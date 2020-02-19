@@ -16,9 +16,7 @@
 
 package org.ehcache.clustered.common.internal.messages;
 
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
-import org.ehcache.clustered.common.internal.store.SequencedElement;
+import org.ehcache.clustered.server.store.SequencedElement;
 import org.terracotta.runnel.Struct;
 import org.terracotta.runnel.StructBuilder;
 import org.terracotta.runnel.decoding.StructArrayDecoder;
@@ -31,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.ehcache.clustered.common.internal.util.ChainBuilder.chainFromList;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
 
 public final class ChainCodec {
 

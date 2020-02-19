@@ -30,7 +30,6 @@ import org.ehcache.clustered.common.internal.store.operations.RemoveOperation;
 import org.ehcache.clustered.common.internal.store.operations.ReplaceOperation;
 import org.ehcache.clustered.common.internal.store.operations.codecs.OperationsCodec;
 import org.ehcache.clustered.client.service.ClusteringService;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.config.ResourceType;
 import org.ehcache.core.events.StoreEventDispatcher;
 import org.ehcache.core.spi.service.StatisticsService;
@@ -50,6 +49,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
+import org.ehcache.clustered.server.store.Chain;
 
 import static org.ehcache.core.exceptions.StorePassThroughException.handleException;
 import static org.ehcache.core.spi.service.ServiceUtils.findSingletonAmongst;

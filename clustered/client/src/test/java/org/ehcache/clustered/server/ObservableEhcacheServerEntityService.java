@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.terracotta.entity.ActiveServerEntity.ReconnectHandler;
 
 /**
  * Provides an alternative to {@link ClusterTierManagerServerEntityService} for unit tests to enable observing

@@ -18,7 +18,6 @@ package org.ehcache.clustered.client.internal.store.operations;
 
 import org.ehcache.clustered.client.internal.store.ClusteredValueHolder;
 import org.ehcache.clustered.client.internal.store.ServerStoreProxy;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.clustered.common.internal.store.operations.Operation;
 import org.ehcache.clustered.common.internal.store.operations.PutOperation;
 import org.ehcache.clustered.common.internal.store.operations.Result;
@@ -29,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableMap;
+import org.ehcache.clustered.server.store.Chain;
 
 /**
  * A specialized chain resolver for eternal caches.

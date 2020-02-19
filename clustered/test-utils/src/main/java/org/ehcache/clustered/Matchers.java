@@ -16,9 +16,7 @@
 
 package org.ehcache.clustered;
 
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
-import org.ehcache.clustered.common.internal.store.SequencedElement;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -28,6 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.ehcache.clustered.ChainUtils.readPayload;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
+import org.ehcache.clustered.server.store.SequencedElement;
 
 public class Matchers {
 

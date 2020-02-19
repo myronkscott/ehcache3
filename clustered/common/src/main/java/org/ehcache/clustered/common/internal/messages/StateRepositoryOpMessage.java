@@ -17,8 +17,9 @@
 package org.ehcache.clustered.common.internal.messages;
 
 import java.io.Serializable;
+import org.ehcache.clustered.common.CacheMessage;
 
-public abstract class StateRepositoryOpMessage extends EhcacheOperationMessage implements Serializable {
+public abstract class StateRepositoryOpMessage extends EhcacheOperationMessage implements CacheMessage, Serializable {
 
   private static final long serialVersionUID = -6701802926010996981L;
 
@@ -30,6 +31,7 @@ public abstract class StateRepositoryOpMessage extends EhcacheOperationMessage i
     this.mapId = mapId;
   }
 
+  @Override
   public String getCacheId() {
     return cacheId;
   }

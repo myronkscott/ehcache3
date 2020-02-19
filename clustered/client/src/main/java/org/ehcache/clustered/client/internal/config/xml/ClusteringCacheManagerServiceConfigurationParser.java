@@ -59,7 +59,7 @@ import javax.xml.transform.stream.StreamSource;
 import static org.ehcache.clustered.client.internal.config.xml.ClusteredCacheConstants.NAMESPACE;
 import static org.ehcache.clustered.client.internal.config.xml.ClusteredCacheConstants.XML_SCHEMA;
 import static org.ehcache.clustered.client.internal.config.xml.ClusteredCacheConstants.TC_CLUSTERED_NAMESPACE_PREFIX;
-import org.ehcache.clustered.common.ServerResourcePool;
+import org.ehcache.clustered.server.store.ServerResourcePool;
 import static org.ehcache.xml.XmlModel.convertToJavaTimeUnit;
 
 /**

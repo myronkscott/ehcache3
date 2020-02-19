@@ -16,15 +16,15 @@
 
 package org.ehcache.clustered;
 
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
-import org.ehcache.clustered.common.internal.store.SequencedElement;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
+import org.ehcache.clustered.server.store.SequencedElement;
 
 public class ChainUtils {
 

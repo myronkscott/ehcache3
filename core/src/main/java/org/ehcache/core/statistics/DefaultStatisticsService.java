@@ -41,6 +41,7 @@ import org.terracotta.statistics.derived.OperationResultFilter;
 import org.terracotta.statistics.derived.latency.DefaultLatencyHistogramStatistic;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
@@ -51,6 +52,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
 import static org.ehcache.core.statistics.StatsUtils.findOperationStatisticOnChildren;
+import static org.terracotta.management.model.stats.StatisticType.convert;
 import static org.terracotta.statistics.StatisticBuilder.operation;
 
 /**
@@ -156,8 +158,20 @@ public class DefaultStatisticsService implements StatisticsService, CacheManager
   }
 
   @Override
-  public <T extends Serializable> void registerStatistic(Object context, String name, StatisticType type, Set<String> tags, Supplier<T> valueSupplier) {
-    StatisticsManager.createPassThroughStatistic(context, name, tags, StatisticType.convert(type), valueSupplier);
+  public <T extends Serializable> void registerStatistic(Object context, String name, org.terracotta.management.model.stats.StatisticType type, Set<String> tags, Supplier<T> valueSupplier) {
+    System.out.println(Arrays.toString(StatisticType.class.getMethods()));
+    StatisticsManager.createPassThroughStatistic(context, name, tags, convert(type), valueSupplier);
+  }
+
+  public static org.terracotta.statistics.StatisticType convertToBase(StatisticType type) {
+    switch (type) {
+      case RATE: return org.terracotta.statistics.StatisticType.RATE;
+      case GAUGE: return org.terracotta.statistics.StatisticType.GAUGE;
+      case TABLE: return org.terracotta.statistics.StatisticType.TABLE;
+      case COUNTER: return org.terracotta.statistics.StatisticType.COUNTER;
+      case RATIO: return org.terracotta.statistics.StatisticType.RATIO;
+      default: throw new IllegalArgumentException("Un supported statistics type");
+    }
   }
 
   @Override

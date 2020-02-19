@@ -18,13 +18,13 @@ package org.ehcache.clustered.common.internal.messages;
 
 
 import org.ehcache.clustered.common.internal.exceptions.ClusterException;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.terracotta.entity.EntityResponse;
 
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.ehcache.clustered.server.store.Chain;
 
 public abstract class EhcacheEntityResponse implements EntityResponse {
 

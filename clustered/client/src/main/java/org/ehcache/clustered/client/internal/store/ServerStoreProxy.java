@@ -15,12 +15,12 @@
  */
 package org.ehcache.clustered.client.internal.store;
 
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
-import org.ehcache.clustered.common.internal.store.ServerStore;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.TimeoutException;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
+import org.ehcache.clustered.server.store.ServerStore;
 
 /**
  * @author Ludovic Orban

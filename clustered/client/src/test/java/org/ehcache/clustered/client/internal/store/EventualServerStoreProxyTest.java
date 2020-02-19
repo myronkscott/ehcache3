@@ -18,7 +18,6 @@ package org.ehcache.clustered.client.internal.store;
 import org.ehcache.clustered.Matchers;
 import org.ehcache.clustered.client.internal.store.ServerStoreProxy.ServerCallback;
 import org.ehcache.clustered.common.Consistency;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.clustered.server.store.ObservableClusterTierServerEntityService.ObservableClusterTierActiveEntity;
 import org.junit.Test;
 
@@ -31,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.ehcache.clustered.ChainUtils.createPayload;
+import org.ehcache.clustered.server.store.Chain;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.Is.is;

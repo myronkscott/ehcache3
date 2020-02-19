@@ -17,7 +17,6 @@ package org.ehcache.clustered.client.internal.store;
 
 import org.ehcache.clustered.client.internal.store.lock.LockingServerStoreProxy;
 import org.ehcache.clustered.client.internal.store.lock.LockingServerStoreProxyImpl;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.exception.ConnectionClosedException;
@@ -27,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import org.ehcache.clustered.server.store.Chain;
 
 public class ReconnectingServerStoreProxy implements LockingServerStoreProxy {
 

@@ -19,6 +19,9 @@ plugins {
 }
 
 dependencies {
+  api (project(':clustered:server:service-api')) {
+    transitive = false
+  }
   providedImplementation project(':api')
   providedImplementation "org.terracotta:packaging-support:$terracottaApisVersion"
   providedImplementation "org.terracotta:entity-common-api:$terracottaApisVersion"

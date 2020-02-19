@@ -20,8 +20,6 @@ import org.ehcache.clustered.client.internal.store.ServerStoreProxy;
 import org.ehcache.clustered.common.internal.util.ChainBuilder;
 import org.ehcache.clustered.client.internal.store.operations.ChainResolver;
 import org.ehcache.clustered.common.internal.store.operations.codecs.OperationsCodec;
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.core.spi.store.Store;
 import org.ehcache.expiry.ExpiryPolicy;
@@ -44,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static java.util.Collections.emptyMap;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;

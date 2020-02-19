@@ -17,7 +17,6 @@ package org.ehcache.clustered.client.internal.store;
 
 import org.ehcache.clustered.common.internal.messages.ClusterTierReconnectMessage;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.LongSupplier;
 
 import static org.ehcache.clustered.client.config.Timeouts.nanosStartingFromNow;
+import org.ehcache.clustered.server.store.Chain;
 
 public class StrongServerStoreProxy implements ServerStoreProxy {
 

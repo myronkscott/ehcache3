@@ -33,10 +33,10 @@ import org.terracotta.runnel.encoding.StructEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.ehcache.clustered.server.store.ServerResourcePool;
 
 import static org.terracotta.runnel.EnumMappingBuilder.newEnumMappingBuilder;
 import static org.terracotta.runnel.StructBuilder.newStructBuilder;
-import org.ehcache.clustered.common.ServerResourcePool;
 
 /**
  * Encodes and decodes configuration objects such as {@link ServerSideConfiguration} and {@link ServerStoreConfiguration}.

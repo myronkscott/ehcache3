@@ -15,13 +15,12 @@
  */
 package org.ehcache.clustered.client.internal.store;
 
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.clustered.common.internal.util.ChainBuilder;
 import org.junit.Test;
 
 import static org.ehcache.clustered.ChainUtils.createPayload;
 import static org.ehcache.clustered.Matchers.hasPayloads;
-import static org.hamcrest.Matchers.is;
+import org.ehcache.clustered.server.store.Chain;
 import static org.junit.Assert.assertThat;
 
 /**

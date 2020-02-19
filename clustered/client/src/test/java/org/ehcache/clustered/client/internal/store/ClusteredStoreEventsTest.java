@@ -28,7 +28,6 @@ import org.ehcache.clustered.client.internal.store.operations.ChainResolver;
 import org.ehcache.clustered.client.internal.store.operations.ExpiryChainResolver;
 import org.ehcache.clustered.common.ServerSideConfiguration;
 import org.ehcache.clustered.common.internal.ServerStoreConfiguration;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.clustered.common.internal.store.operations.ConditionalRemoveOperation;
 import org.ehcache.clustered.common.internal.store.operations.ConditionalReplaceOperation;
 import org.ehcache.clustered.common.internal.store.operations.Operation;
@@ -66,6 +65,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.function.Supplier;
+import org.ehcache.clustered.server.store.Chain;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.eq;

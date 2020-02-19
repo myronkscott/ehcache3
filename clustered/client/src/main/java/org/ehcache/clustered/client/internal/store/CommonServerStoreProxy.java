@@ -30,8 +30,6 @@ import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.Clien
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.GetAndAppendMessage;
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.GetMessage;
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.ReplaceAtHeadMessage;
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
 import org.ehcache.config.units.MemoryUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +41,8 @@ import java.util.concurrent.TimeoutException;
 
 import static java.lang.Math.toIntExact;
 import static java.util.Objects.requireNonNull;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
 
 /**
  * Provides client-side access to the services of a {@code ServerStore}.

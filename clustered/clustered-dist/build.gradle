@@ -52,17 +52,32 @@ dependencies {
   compileOnly "org.terracotta:lease-api:$terracottaPlatformVersion"
     
   serverApis ("org.terracotta:statistics:$statisticVersion") {
-    exclude group: 'org.slf4j'
+    transitive = false
   }
   serverApis ("org.terracotta.management:monitoring-service-api:$terracottaPlatformVersion") {
-    exclude group: 'org.slf4j'
+    transitive = false
   }
   serverApis ("org.terracotta.management.dist:mnm-common:$terracottaPlatformVersion") {
+    transitive = false
+  }
+  serverApis(project(':clustered:server:service-api')) {
     exclude group: 'org.slf4j'
+    exclude group: 'org.terracotta', module: 'entity-server-api'
+    exclude group: 'org.terracotta', module: 'standard-cluster-services'
   }
 
-  
-  serverLibs(project(':clustered:server')) {
+  serverLibs(project(':clustered:server:entity')) {
+    exclude group: 'org.slf4j'
+    exclude module: 'service-api'
+    exclude group: 'org.terracotta', module: 'entity-server-api'
+    exclude group: 'org.terracotta', module: 'entity-common-api'
+    exclude group: 'org.terracotta', module: 'packaging-support'
+    exclude group: 'org.terracotta', module: 'standard-cluster-services'
+    exclude group: 'org.terracotta', module: 'statistics'
+}
+
+  serverLibs(project(':clustered:server:service')) {
+    exclude module: 'service-api'
     exclude group: 'org.terracotta', module: 'entity-server-api'
     exclude group: 'org.terracotta', module: 'entity-common-api'
     exclude group: 'org.terracotta', module: 'packaging-support'
@@ -78,7 +93,13 @@ dependencies {
   serverLibs "org.terracotta:runnel:$parent.terracottaPlatformVersion"
 
   serverLibs "org.terracotta:lease-entity-server:$parent.terracottaPlatformVersion"
-
+  
+  serverLibs "org.terracotta:lease-entity-server:$parent.terracottaPlatformVersion"
+  
+    serverLibs ("org.terracotta.management.dist:mnm-server:$terracottaPlatformVersion") {
+    exclude group:'org.terracotta.management.dist', module:'mnm-common'
+  }
+  
   kit "org.terracotta.internal:terracotta-kit:$terracottaCoreVersion@tar.gz"
 
   shadowCompile "org.slf4j:slf4j-api:$parent.slf4jVersion"
@@ -119,15 +140,9 @@ distributions {
       }
       into ("server/plugins/api") {
         from configurations.serverApis
-//        include { f -> 
-//          f.name.contains('-api-')
-//        }
       }
       into ("server/plugins/lib") {
         from configurations.serverLibs
-//        exclude { f -> 
-//          f.name.contains('-api-')
-//        }
       }
       into ('client/ehcache') {
         from jar

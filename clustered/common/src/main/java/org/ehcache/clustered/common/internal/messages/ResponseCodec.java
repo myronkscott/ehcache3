@@ -19,7 +19,6 @@ package org.ehcache.clustered.common.internal.messages;
 import org.ehcache.clustered.common.internal.exceptions.ClusterException;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.PrepareForDestroy;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.ResolveRequest;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.clustered.common.internal.store.Util;
 import org.terracotta.runnel.Struct;
 import org.terracotta.runnel.StructBuilder;
@@ -57,6 +56,7 @@ import static org.ehcache.clustered.common.internal.messages.EhcacheResponseType
 import static org.ehcache.clustered.common.internal.messages.EhcacheResponseType.RESPONSE_TYPE_FIELD_NAME;
 import static org.ehcache.clustered.common.internal.messages.MessageCodecUtils.KEY_FIELD;
 import static org.ehcache.clustered.common.internal.messages.StateRepositoryOpCodec.WHITELIST_PREDICATE;
+import org.ehcache.clustered.server.store.Chain;
 import static org.terracotta.runnel.StructBuilder.newStructBuilder;
 
 public class ResponseCodec {

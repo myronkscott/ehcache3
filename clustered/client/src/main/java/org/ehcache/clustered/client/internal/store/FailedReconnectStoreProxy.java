@@ -17,11 +17,10 @@
 package org.ehcache.clustered.client.internal.store;
 
 import org.ehcache.clustered.client.internal.store.lock.LockingServerStoreProxy;
-import org.ehcache.clustered.common.internal.store.Chain;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
-import java.util.concurrent.TimeoutException;
+import org.ehcache.clustered.server.store.Chain;
 
 public class FailedReconnectStoreProxy implements LockingServerStoreProxy {
   private final Throwable failure;

@@ -22,8 +22,6 @@ import org.ehcache.clustered.common.internal.store.operations.Operation;
 import org.ehcache.clustered.common.internal.store.operations.PutOperation;
 import org.ehcache.clustered.common.internal.store.operations.RemoveOperation;
 import org.ehcache.clustered.common.internal.store.operations.codecs.OperationsCodec;
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
 import org.ehcache.spi.loaderwriter.CacheLoaderWriter;
 
 import java.nio.ByteBuffer;
@@ -31,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
 
 class ClusteredWriteBehind<K, V> {
   private final ClusteredWriteBehindStore<K, V> clusteredWriteBehindStore;

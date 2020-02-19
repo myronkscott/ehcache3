@@ -16,12 +16,11 @@
 package org.ehcache.clustered.client.internal.store.lock;
 
 import org.ehcache.clustered.client.internal.store.ServerStoreProxy;
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
-
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.concurrent.TimeoutException;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
 
 public class LockingServerStoreProxyImpl implements LockingServerStoreProxy {
 

@@ -23,7 +23,6 @@ import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.Clien
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.GetAndAppendMessage;
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.GetMessage;
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.ReplaceAtHeadMessage;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.terracotta.runnel.Struct;
 import org.terracotta.runnel.decoding.StructDecoder;
 
@@ -36,6 +35,7 @@ import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.MESSAGE_TYPE_FIELD_NAME;
 import static org.ehcache.clustered.common.internal.messages.MessageCodecUtils.KEY_FIELD;
 import static org.ehcache.clustered.common.internal.messages.MessageCodecUtils.encodeMandatoryFields;
+import org.ehcache.clustered.server.store.Chain;
 import static org.terracotta.runnel.StructBuilder.newStructBuilder;
 
 public class ServerStoreOpCodec {

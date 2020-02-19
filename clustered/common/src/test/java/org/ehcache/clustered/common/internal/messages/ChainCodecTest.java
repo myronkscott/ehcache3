@@ -16,8 +16,6 @@
 
 package org.ehcache.clustered.common.internal.messages;
 
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -28,6 +26,8 @@ import static org.ehcache.clustered.ChainUtils.readPayload;
 import static org.ehcache.clustered.ChainUtils.sequencedChainOf;
 import static org.ehcache.clustered.Matchers.hasPayloads;
 import static org.ehcache.clustered.Matchers.sameSequenceAs;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.is;
 

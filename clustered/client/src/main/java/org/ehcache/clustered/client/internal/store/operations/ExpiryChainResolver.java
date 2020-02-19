@@ -18,7 +18,6 @@ package org.ehcache.clustered.client.internal.store.operations;
 
 import org.ehcache.clustered.client.internal.store.ClusteredValueHolder;
 import org.ehcache.clustered.client.internal.store.ServerStoreProxy;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.clustered.common.internal.store.operations.Operation;
 import org.ehcache.clustered.common.internal.store.operations.PutOperation;
 import org.ehcache.clustered.common.internal.store.operations.Result;
@@ -37,6 +36,7 @@ import java.util.concurrent.TimeoutException;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import org.ehcache.clustered.server.store.Chain;
 import static org.ehcache.core.config.ExpiryUtils.isExpiryDurationInfinite;
 
 /**

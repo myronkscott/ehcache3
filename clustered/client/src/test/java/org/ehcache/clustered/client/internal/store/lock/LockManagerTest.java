@@ -22,7 +22,6 @@ import org.ehcache.clustered.common.internal.messages.ClusterTierReconnectMessag
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.LockSuccess;
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.LockMessage;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -33,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import static org.ehcache.clustered.ChainUtils.chainOf;
 import static org.ehcache.clustered.ChainUtils.createPayload;
 import static org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.lockFailure;
+import org.ehcache.clustered.server.store.Chain;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;

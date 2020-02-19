@@ -29,7 +29,6 @@ import org.ehcache.clustered.client.internal.store.operations.ExpiryChainResolve
 import org.ehcache.clustered.client.service.ClusteringService;
 import org.ehcache.clustered.client.service.ClusteringService.ClusteredCacheIdentifier;
 import org.ehcache.clustered.common.Consistency;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.ehcache.clustered.common.internal.store.operations.ConditionalRemoveOperation;
 import org.ehcache.clustered.common.internal.store.operations.ConditionalReplaceOperation;
 import org.ehcache.clustered.common.internal.store.operations.Operation;
@@ -98,6 +97,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Collections.emptyIterator;
+import org.ehcache.clustered.server.store.Chain;
 import static org.ehcache.core.exceptions.StorePassThroughException.handleException;
 import static org.ehcache.core.spi.service.ServiceUtils.findSingletonAmongst;
 

@@ -22,7 +22,6 @@ import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.LockSuccess;
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.LockMessage;
 import org.ehcache.clustered.common.internal.messages.ServerStoreOpMessage.UnlockMessage;
-import org.ehcache.clustered.common.internal.store.Chain;
 
 import java.util.Collections;
 import java.util.Set;
@@ -30,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
 import static org.ehcache.clustered.common.internal.messages.EhcacheResponseType.LOCK_FAILURE;
+import org.ehcache.clustered.server.store.Chain;
 
 public class LockManager {
 

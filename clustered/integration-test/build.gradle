@@ -70,7 +70,9 @@ test {
   systemProperty 'kitInstallationPath', "$unzipKit.destinationDir/${project(':clustered:clustered-dist').archivesBaseName}-$project.version-kit"
   // Uncomment to include client logging in console output
   // testLogging.showStandardStreams = true
-  // systemProperty 'serverDebugPortStart', '9000'
-  // systemProperty 'serverDebugStartPort', '9000'
+  if (project.hasProperty('serverDebug')) {
+    systemProperty 'serverDebugPortStart', '9000'
+    systemProperty 'serverDebugStartPort', '9000'
+  }
 }
 

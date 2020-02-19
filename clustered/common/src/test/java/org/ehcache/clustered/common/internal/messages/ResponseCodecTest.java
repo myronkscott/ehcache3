@@ -17,7 +17,6 @@
 package org.ehcache.clustered.common.internal.messages;
 
 import org.ehcache.clustered.common.internal.exceptions.IllegalMessageException;
-import org.ehcache.clustered.common.internal.store.Chain;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -27,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.ehcache.clustered.ChainUtils.chainOf;
-import static org.ehcache.clustered.ChainUtils.createPayload;
 import static org.ehcache.clustered.Matchers.hasPayloads;
 import static java.util.Arrays.asList;
 import static org.ehcache.clustered.ChainUtils.createPayload;
@@ -41,6 +39,7 @@ import static org.ehcache.clustered.common.internal.messages.EhcacheEntityRespon
 import static org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.prepareForDestroy;
 import static org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.serverInvalidateHash;
 import static org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.success;
+import org.ehcache.clustered.server.store.Chain;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;

@@ -1,4 +1,5 @@
 dependencies {
   api project(':clustered:common')
+  api project(':clustered:server:service-api')
   api "org.hamcrest:hamcrest-core:$hamcrestVersion"
 }

@@ -17,8 +17,6 @@
 package org.ehcache.clustered.client.internal.store.operations;
 
 import org.ehcache.clustered.client.internal.store.ServerStoreProxy;
-import org.ehcache.clustered.common.internal.store.Chain;
-import org.ehcache.clustered.common.internal.store.Element;
 import org.ehcache.clustered.common.internal.store.operations.Operation;
 import org.ehcache.clustered.common.internal.store.operations.PutOperation;
 import org.ehcache.clustered.common.internal.store.operations.codecs.OperationsCodec;
@@ -28,6 +26,8 @@ import org.ehcache.core.spi.store.Store.ValueHolder;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import org.ehcache.clustered.server.store.Chain;
+import org.ehcache.clustered.server.store.Element;
 
 /**
  * An abstract chain resolver.

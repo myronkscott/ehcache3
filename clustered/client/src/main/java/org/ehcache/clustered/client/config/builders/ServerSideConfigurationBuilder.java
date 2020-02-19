@@ -15,7 +15,6 @@
  */
 package org.ehcache.clustered.client.config.builders;
 
-import java.util.AbstractMap;
 import java.util.Map;
 
 import org.ehcache.clustered.client.config.ClusteringServiceConfiguration;
@@ -26,11 +25,9 @@ import org.ehcache.config.units.MemoryUnit;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import org.ehcache.clustered.common.ServerResourcePool;
 import org.ehcache.clustered.common.ServerSideConfiguration.Pool;
+import org.ehcache.clustered.server.store.ServerResourcePool;
 
 /**
  * Constructs the server-side portion of a {@link ClusteringServiceConfiguration}.  An instance of this

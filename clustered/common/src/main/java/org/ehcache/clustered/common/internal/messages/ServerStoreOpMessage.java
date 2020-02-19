@@ -16,10 +16,10 @@
 
 package org.ehcache.clustered.common.internal.messages;
 
-import org.ehcache.clustered.common.internal.store.Chain;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
+import org.ehcache.clustered.server.store.Chain;
 
 public abstract class ServerStoreOpMessage extends EhcacheOperationMessage {
 
