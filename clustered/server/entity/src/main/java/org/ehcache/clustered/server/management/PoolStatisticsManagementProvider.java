@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.ehcache.clustered.server.management.PoolBinding;
 
 import static java.util.Arrays.asList;
 import static org.terracotta.statistics.registry.ValueStatisticDescriptor.descriptor;

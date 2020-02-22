@@ -57,6 +57,8 @@ dependencies {
   serverApis ("org.terracotta.management:monitoring-service-api:$terracottaPlatformVersion") {
     transitive = false
   }
+  //  this is here because monitoring-service-api depends on mnm-common.  if that can be unwound,
+  //  mnm-common can go into lib
   serverApis ("org.terracotta.management.dist:mnm-common:$terracottaPlatformVersion") {
     transitive = false
   }
@@ -74,6 +76,8 @@ dependencies {
     exclude group: 'org.terracotta', module: 'packaging-support'
     exclude group: 'org.terracotta', module: 'standard-cluster-services'
     exclude group: 'org.terracotta', module: 'statistics'
+    exclude group: 'org.terracotta.management'
+    exclude group: 'org.terracotta.management.dist'
 }
 
   serverLibs(project(':clustered:server:service')) {
@@ -92,11 +96,13 @@ dependencies {
   // Needed because declared as provided in the different projects
   serverLibs "org.terracotta:runnel:$parent.terracottaPlatformVersion"
 
-  serverLibs "org.terracotta:lease-entity-server:$parent.terracottaPlatformVersion"
-  
-  serverLibs "org.terracotta:lease-entity-server:$parent.terracottaPlatformVersion"
-  
-    serverLibs ("org.terracotta.management.dist:mnm-server:$terracottaPlatformVersion") {
+  serverLibs("org.terracotta:lease-entity-server:$parent.terracottaPlatformVersion") {
+    exclude group: 'org.terracotta', module: 'lease-common'
+    exclude group: 'org.terracotta', module: 'lease-entity-api'
+    exclude group: 'org.terracotta', module: 'lease-entity-common'
+  }
+    
+  serverLibs ("org.terracotta.management.dist:mnm-server:$terracottaPlatformVersion") {
     exclude group:'org.terracotta.management.dist', module:'mnm-common'
   }
   

@@ -22,7 +22,7 @@ plugins {
 dependencies {
   compileOnly project(':impl')
   compileOnly project(':xml')
-  implementation project(':clustered:common')
+  implementation project(':clustered:common') 
   providedImplementation "org.terracotta:entity-client-api:$terracottaApisVersion"
   providedImplementation "org.terracotta:runnel:$terracottaPlatformVersion"
   providedImplementation "org.terracotta:lease-api:$terracottaPlatformVersion"
@@ -37,6 +37,7 @@ dependencies {
     exclude group: 'org.terracotta.internal', module: 'tc-config-parser'
   }
   testImplementation project(':clustered:server:service')
+  testImplementation project(':clustered:server:service-api')
   testImplementation("org.terracotta:offheap-resource:$terracottaPlatformVersion") {
     transitive = false
   }

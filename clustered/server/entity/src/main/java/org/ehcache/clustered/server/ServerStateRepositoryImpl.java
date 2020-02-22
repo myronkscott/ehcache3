@@ -40,14 +40,11 @@ public class ServerStateRepositoryImpl implements ServerStateRepository {
   private final String id;
 
   public ServerStateRepositoryImpl(String id) {
-    ClassLoader loader = getClass().getClassLoader();
     this.id = id;
   }
 
   @Override
   public EntityResponse invoke(EntityMessage message) {
-    ClassLoader loader = message.getClass().getClassLoader();
-    ClassLoader second = StateRepositoryOpMessage.class.getClassLoader();
     StateRepositoryOpMessage state = (StateRepositoryOpMessage)message;
     String mapId = state.getMapId();
     ConcurrentMap<Object, Object> map = getStateMap(mapId);

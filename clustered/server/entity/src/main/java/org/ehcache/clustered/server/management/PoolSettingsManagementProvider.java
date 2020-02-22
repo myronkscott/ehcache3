@@ -26,7 +26,6 @@ import org.terracotta.management.service.monitoring.registry.provider.AliasBindi
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
-import org.ehcache.clustered.server.management.PoolBinding;
 
 @Named("PoolSettings")
 @RequiredContext({@Named("consumerId"), @Named("type"), @Named("alias")})

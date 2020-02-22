@@ -20,7 +20,7 @@ import org.ehcache.clustered.common.ServerSideConfiguration;
 import org.ehcache.clustered.common.internal.ClusterTierManagerConfiguration;
 import org.ehcache.clustered.common.internal.exceptions.DestroyInProgressException;
 import org.ehcache.clustered.common.internal.messages.LifecycleMessage;
-import org.ehcache.clustered.server.management.Management;
+import org.ehcache.clustered.server.management.ManagementImpl;
 import org.ehcache.clustered.server.state.EhcacheStateService;
 import org.ehcache.clustered.server.state.config.EhcacheStateServiceConfig;
 import org.ehcache.clustered.server.store.InvalidMessage;
@@ -85,7 +85,7 @@ public class ClusterTierManagerPassiveEntityTest {
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
     EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
-    Management management = new Management(registry, ehcacheStateService, false, configuration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, configuration.getIdentifier());
     final ClusterTierManagerPassiveEntity passiveEntity = new ClusterTierManagerPassiveEntity(configuration, ehcacheStateService, management);
 
     assertThat(registry.getStoreManagerService()
@@ -114,7 +114,7 @@ public class ClusterTierManagerPassiveEntityTest {
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
     EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
-    Management management = new Management(registry, ehcacheStateService, false, configuration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, configuration.getIdentifier());
     try {
       new ClusterTierManagerPassiveEntity(configuration, ehcacheStateService, management);
       fail("Entity creation should have failed");
@@ -147,7 +147,7 @@ public class ClusterTierManagerPassiveEntityTest {
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
     EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
-    Management management = new Management(registry, ehcacheStateService, false, configuration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, configuration.getIdentifier());
     try {
       new ClusterTierManagerPassiveEntity(configuration, ehcacheStateService, management);
       fail("Entity creation should have failed");
@@ -179,7 +179,7 @@ public class ClusterTierManagerPassiveEntityTest {
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
     EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
-    Management management = new Management(registry, ehcacheStateService, false, configuration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, configuration.getIdentifier());
     try {
       new ClusterTierManagerPassiveEntity(configuration, ehcacheStateService, management);
       fail("Entity creation should have failed");
@@ -209,7 +209,7 @@ public class ClusterTierManagerPassiveEntityTest {
       .build();
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", serverSideConfiguration);
     EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
-    Management management = new Management(registry, ehcacheStateService, false, configuration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, configuration.getIdentifier());
     final ClusterTierManagerPassiveEntity passiveEntity = new ClusterTierManagerPassiveEntity(configuration, ehcacheStateService, management);
 
     assertThat(registry.getResource("serverResource1").getUsed(), is(MemoryUnit.MEGABYTES.toBytes(4L)));
@@ -233,7 +233,7 @@ public class ClusterTierManagerPassiveEntityTest {
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", new ServerSideConfigBuilder()
       .build());
     EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
-    Management management = new Management(registry, ehcacheStateService, false, configuration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, configuration.getIdentifier());
     final ClusterTierManagerPassiveEntity passiveEntity = new ClusterTierManagerPassiveEntity(configuration, ehcacheStateService, management);
 
     try {
@@ -252,7 +252,7 @@ public class ClusterTierManagerPassiveEntityTest {
     ClusterTierManagerConfiguration configuration = new ClusterTierManagerConfiguration("identifier", new ServerSideConfigBuilder()
       .build());
     EhcacheStateService ehcacheStateService = registry.getService(new EhcacheStateServiceConfig(configuration, registry, DEFAULT_MAPPER));
-    Management management = new Management(registry, ehcacheStateService, false, configuration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, configuration.getIdentifier());
     final ClusterTierManagerPassiveEntity passiveEntity = new ClusterTierManagerPassiveEntity(configuration, ehcacheStateService, management);
 
     passiveEntity.invokePassive(null, new LifecycleMessage.PrepareForDestroy());

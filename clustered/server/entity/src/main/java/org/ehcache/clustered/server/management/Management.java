@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.ehcache.clustered.server.management;
 
-plugins {
-  id 'org.ehcache.build.deploy'
-}
+import java.io.Closeable;
 
-dependencies {
-//  implementation group: 'org.terracotta', name: 'offheap-store', version: offheapVersion
-  implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-  implementation "org.terracotta.management.dist:mnm-common:$terracottaPlatformVersion"
-  providedImplementation "org.terracotta:entity-server-api:$terracottaApisVersion"
-  providedImplementation "org.terracotta:standard-cluster-services:$terracottaApisVersion"
-//  providedImplementation "org.terracotta:runnel:$terracottaPlatformVersion"
 
+public interface Management extends Closeable {
+
+  Object getManagementRegistry();
+
+  void entityCreated();
+
+  void entityPromotionCompleted();
+
+  void sharedPoolsConfigured();
+
+  @Override
+  public void close();
 }

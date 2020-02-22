@@ -29,7 +29,6 @@ import org.ehcache.clustered.common.internal.messages.ServerStoreOpCodec;
 import org.ehcache.clustered.common.internal.messages.StateRepositoryOpCodec;
 import org.ehcache.clustered.server.internal.messages.EhcacheServerCodec;
 import org.ehcache.clustered.server.internal.messages.PassiveReplicationMessageCodec;
-import org.ehcache.clustered.server.management.Management;
 import org.ehcache.clustered.server.state.EhcacheStateService;
 import org.ehcache.clustered.server.state.config.EhcacheStateServiceConfig;
 import org.terracotta.entity.CommonServerEntity;
@@ -43,7 +42,7 @@ import org.terracotta.entity.ServiceRegistry;
 import org.terracotta.entity.SyncMessageCodec;
 
 import static org.ehcache.clustered.server.ConcurrencyStrategies.clusterTierManagerConcurrency;
-import org.ehcache.clustered.server.repo.ServerStateRepository;
+import org.ehcache.clustered.server.management.ManagementImpl;
 
 public class ClusterTierManagerServerEntityService implements EntityServerService<EhcacheEntityMessage, EhcacheEntityResponse> {
 
@@ -73,7 +72,7 @@ public class ClusterTierManagerServerEntityService implements EntityServerServic
     } catch (ServiceException e) {
       throw new ConfigurationException("Unable to retrieve EhcacheStateService: " + e.getMessage());
     }
-    Management management = new Management(registry, ehcacheStateService, true, clusterTierManagerConfiguration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, true, clusterTierManagerConfiguration.getIdentifier());
     return new ClusterTierManagerActiveEntity(clusterTierManagerConfiguration, ehcacheStateService, management);
   }
 
@@ -86,7 +85,7 @@ public class ClusterTierManagerServerEntityService implements EntityServerServic
     } catch (ServiceException e) {
       throw new ConfigurationException("Unable to retrieve EhcacheStateService: " + e.getMessage());
     }
-    Management management = new Management(registry, ehcacheStateService, false, clusterTierManagerConfiguration.getIdentifier());
+    ManagementImpl management = new ManagementImpl(registry, ehcacheStateService, false, clusterTierManagerConfiguration.getIdentifier());
     return new ClusterTierManagerPassiveEntity(clusterTierManagerConfiguration, ehcacheStateService, management);
   }
 

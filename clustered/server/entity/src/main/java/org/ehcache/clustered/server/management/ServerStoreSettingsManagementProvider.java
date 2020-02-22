@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.ehcache.clustered.common.internal.ServerStoreConfiguration;
 import org.ehcache.clustered.server.state.ConfigSerializer;
-import org.ehcache.clustered.server.state.EhcacheStateService;
 
 @Named("ServerStoreSettings")
 @RequiredContext({@Named("consumerId"), @Named("type"), @Named("alias")})

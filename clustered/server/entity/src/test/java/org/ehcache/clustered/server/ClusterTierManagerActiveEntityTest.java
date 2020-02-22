@@ -24,7 +24,7 @@ import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse;
 import org.ehcache.clustered.common.internal.messages.EhcacheEntityResponse.Failure;
 import org.ehcache.clustered.common.internal.messages.EhcacheResponseType;
 import org.ehcache.clustered.common.internal.messages.LifeCycleMessageFactory;
-import org.ehcache.clustered.server.management.Management;
+import org.ehcache.clustered.server.management.ManagementImpl;
 import org.ehcache.clustered.server.state.EhcacheStateService;
 import org.ehcache.clustered.server.state.config.EhcacheStateServiceConfig;
 import org.ehcache.clustered.server.store.InvalidMessage;
@@ -63,7 +63,7 @@ public class ClusterTierManagerActiveEntityTest {
   private static final LifeCycleMessageFactory MESSAGE_FACTORY = new LifeCycleMessageFactory();
   private static final KeySegmentMapper DEFAULT_MAPPER = new KeySegmentMapper(16);
 
-  private Management management = mock(Management.class);
+  private ManagementImpl management = mock(ManagementImpl.class);
   private ClusterTierManagerConfiguration blankConfiguration = new ClusterTierManagerConfiguration("identifier", new ServerSideConfigBuilder().build());
 
   @Test(expected = ConfigurationException.class)

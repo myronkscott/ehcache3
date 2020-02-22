@@ -29,15 +29,15 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.ehcache.clustered.server.management.Notification.EHCACHE_RESOURCE_POOLS_CONFIGURED;
 
-public class Management implements Closeable {
+public class ManagementImpl implements Management {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Management.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ManagementImpl.class);
 
   private final EntityManagementRegistry managementRegistry;
   private final EhcacheStateService ehcacheStateService;
   private final String clusterTierManagerIdentifier;
 
-  public Management(ServiceRegistry services, EhcacheStateService ehcacheStateService, boolean active, String clusterTierManagerIdentifier) throws ConfigurationException {
+  public ManagementImpl(ServiceRegistry services, EhcacheStateService ehcacheStateService, boolean active, String clusterTierManagerIdentifier) throws ConfigurationException {
     this.ehcacheStateService = ehcacheStateService;
 
     // create an entity monitoring service that allows this entity to push some management information into voltron monitoring service
