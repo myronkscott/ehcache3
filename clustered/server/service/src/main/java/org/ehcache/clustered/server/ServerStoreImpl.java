@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import org.ehcache.clustered.server.state.ConfigSerializer;
 import org.ehcache.clustered.server.store.Chain;
 
 public class ServerStoreImpl implements ServerSideServerStore {
@@ -71,8 +70,8 @@ public class ServerStoreImpl implements ServerSideServerStore {
   }
 
   @Override
-  public byte[] getStoreConfiguration() {
-    return ConfigSerializer.objectToBytes(storeConfiguration);
+  public ServerStoreConfiguration getStoreConfiguration() {
+    return storeConfiguration;
   }
 
   @Override

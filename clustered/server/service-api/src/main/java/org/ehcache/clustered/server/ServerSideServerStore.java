@@ -20,11 +20,12 @@ import org.ehcache.clustered.server.store.ServerStore;
 
 import java.util.List;
 import java.util.Set;
+import org.ehcache.clustered.common.internal.ServerStoreConfiguration;
 
 public interface ServerSideServerStore extends ServerStore {
   void setEventListener(ServerStoreEventListener listener);
   void enableEvents(boolean enable);
-  byte[] getStoreConfiguration();
+  ServerStoreConfiguration getStoreConfiguration();
   List<Set<Long>> getSegmentKeySets();
   void put(long key, Chain chain);
   void remove(long key);

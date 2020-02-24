@@ -124,11 +124,9 @@ import static org.ehcache.clustered.common.internal.messages.EhcacheEntityRespon
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.isLifecycleMessage;
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.isStateRepoOperationMessage;
 import static org.ehcache.clustered.common.internal.messages.EhcacheMessageType.isStoreOperationMessage;
-import org.ehcache.clustered.common.internal.store.operations.codecs.OperationsCodec;
 import static org.ehcache.clustered.server.ConcurrencyStrategies.DEFAULT_KEY;
 import static org.ehcache.clustered.server.ConcurrencyStrategies.clusterTierConcurrency;
 import org.ehcache.clustered.server.ServerStateRepositoryImpl;
-import org.ehcache.clustered.server.state.ConfigSerializer;
 
 /**
  * ClusterTierActiveEntity
@@ -367,7 +365,7 @@ public class ClusterTierActiveEntity implements ActiveServerEntity<EhcacheEntity
     LOGGER.info("Client {} validating cluster tier '{}'", clientDescriptor, storeIdentifier);
     ServerSideServerStore store = stateService.getStore(storeIdentifier);
     if (store != null) {
-      storeCompatibility.verify((ServerStoreConfiguration)ConfigSerializer.bytesToObject(store.getStoreConfiguration()), clientConfiguration);
+      storeCompatibility.verify(store.getStoreConfiguration(), clientConfiguration);
       connectedClients.put(clientDescriptor, Boolean.TRUE);
     } else {
       throw new InvalidStoreException("cluster tier '" + storeIdentifier + "' does not exist");
@@ -783,7 +781,7 @@ public class ClusterTierActiveEntity implements ActiveServerEntity<EhcacheEntity
   }
 
   private void addInflightInvalidationsForStrongCache(ClientDescriptor clientDescriptor, ClusterTierReconnectMessage reconnectMessage, ServerSideServerStore serverStore) {
-    ServerStoreConfiguration config = (ServerStoreConfiguration)ConfigSerializer.bytesToObject(serverStore.getStoreConfiguration());
+    ServerStoreConfiguration config = serverStore.getStoreConfiguration();
     if (config.getConsistency().equals(Consistency.STRONG)) {
       Set<Long> invalidationsInProgress = reconnectMessage.getInvalidationsInProgress();
       LOGGER.debug("Number of Inflight Invalidations from client ID {} for cache {} is {}.", clientDescriptor.getSourceId().toLong(), storeIdentifier, invalidationsInProgress

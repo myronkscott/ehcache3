@@ -21,13 +21,13 @@ import org.terracotta.management.model.capabilities.descriptors.Settings;
 import org.terracotta.management.model.context.Context;
 import org.terracotta.management.registry.Named;
 import org.terracotta.management.registry.RequiredContext;
-import org.terracotta.management.service.monitoring.registry.provider.AliasBindingManagementProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import org.ehcache.clustered.common.internal.ServerStoreConfiguration;
-import org.ehcache.clustered.server.state.ConfigSerializer;
+import org.terracotta.management.service.monitoring.registry.provider.AliasBindingManagementProvider;
+import org.terracotta.management.service.monitoring.registry.provider.AliasBindingManagementProvider.ExposedAliasBinding;
 
 @Named("ServerStoreSettings")
 @RequiredContext({@Named("consumerId"), @Named("type"), @Named("alias")})
@@ -68,7 +68,7 @@ class ServerStoreSettingsManagementProvider extends AliasBindingManagementProvid
 
     Settings getSettings() {
       // names taken from ServerStoreConfiguration.isCompatible()
-      ServerStoreConfiguration config = (ServerStoreConfiguration)ConfigSerializer.bytesToObject(getBinding().getValue().getStoreConfiguration());
+      ServerStoreConfiguration config = getBinding().getValue().getStoreConfiguration();
       PoolAllocation poolAllocation = config.getPoolAllocation();
       Settings settings = new Settings(getContext())
         .set("resourcePoolType", poolAllocation.getClass().getSimpleName().toLowerCase())
